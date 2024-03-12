@@ -1,17 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GridManager : MonoBehaviour
 {
-    public Dictionary<Vector3Int, Node> gridTileDict = new Dictionary<Vector3Int, Node>();
-    private void Start()
+    [SerializeField]private SerializedDictionary<Vector3Int, Node> gridTileDict;
+    // public List<Vector3Int> objectscord;
+    // public List<Node> objects;
+    private void Awake()
     {
+        gridTileDict = new SerializedDictionary<Vector3Int, Node>();
         foreach (var node in FindObjectsOfType<Node>())
         {
-            gridTileDict[node.cords] = node;
+            gridTileDict.Add(node.cords,node);
         }
+        // objects = gridTileDict.Values.ToList();
+        // objectscord = gridTileDict.Keys.ToList();
     }
 
     public Node GetTileAt(Vector3Int cords)
@@ -21,7 +28,6 @@ public class GridManager : MonoBehaviour
         return result;
     }
 }
-
 
 public static class Direction
 {
