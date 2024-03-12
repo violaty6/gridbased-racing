@@ -6,10 +6,12 @@ using UnityEngine;
 public class Node: MonoBehaviour
 {
     public Vector3Int cords;
+    public NodeType currentType;
     public enum NodeType
     {
         Default,
         Obstacle,
+        Void,
         Finish
     }
     private void Awake()

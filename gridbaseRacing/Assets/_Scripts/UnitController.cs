@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -50,32 +51,32 @@ public class UnitController : MonoBehaviour
     {
         Vector2 input = ctx.ReadValue<Vector2>();
         Vector3 moveDirection = Vector3.zero;
-        if (input.x != 0 && input.y == 0)
+        List<Node> checkNodes = new List<Node>();
+        List<Node.NodeType> checkNodeType = new List<Node.NodeType>();
+        for (int i = 1; i <= _UnitEnginePower; i++)
         {
-            moveDirection.x = input.x * _UnitEnginePower;
+            if (input.x != 0 && input.y == 0)
+            {
+                moveDirection.x = input.x *i ;
+            }
+            else if (input.y != 0 && input.x == 0)
+            {
+                moveDirection.z = input.y *i ;
+            }
+            Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
+            Vector3Int targetCord = currentNode.cords + moveDirectionInt;
+            Node targetNode = _gridManager.GetTileAt(targetCord);
+            checkNodes.Add(targetNode);
+            if (targetNode==null) checkNodeType.Add(Node.NodeType.Void);
+            else checkNodeType.Add(targetNode.currentType);
         }
-        else if (input.y != 0 && input.x == 0)
+        if (!checkNodes.Contains(null) && !checkNodeType.Contains(Node.NodeType.Obstacle) && !checkNodeType.Contains(Node.NodeType.Void))
         {
-            moveDirection.z = input.y * _UnitEnginePower;
-        }
-        Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
-        Vector3Int targetCord = currentNode.cords + moveDirectionInt;
-        Node targetNode = _gridManager.GetTileAt(targetCord);
-        if (targetNode != null)
-        {
-            MoveFeedBack(targetNode);
-            currentNode = targetNode;
+            MoveFeedBack(checkNodes.Last());
+            currentNode = checkNodes.Last();
         }
     }
 
-    void CheckBlocks(Vector3Int start, Vector3Int end)
-    {
-        // for (int i = 0; i < UPPER; i++)
-        // {
-        //                 
-        // }
-    }
-    
     void MoveFeedBack(Node targetNode)
     {
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
