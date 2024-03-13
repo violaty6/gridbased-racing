@@ -114,6 +114,7 @@ public class UnitController : MonoBehaviour
     
     void MoveFeedBack(Node targetNode)
     {
+        GameEvents.current.onMovePerformed();
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f);
