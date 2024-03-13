@@ -9,7 +9,11 @@ using UnityEngine.InputSystem;
 
 public class UnitController : MonoBehaviour
 {
-    [SerializeField]private bool isCrashed = false;
+    [SerializeField] private List<GameObject> _wheels;
+    [SerializeField] private GameObject _top;
+    
+    [SerializeField] private bool isCrashed = false;
+    [SerializeField] private bool isMoving = false;
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Node currentNode;
     [SerializeField] private int _UnitEnginePower;
@@ -42,7 +46,7 @@ public class UnitController : MonoBehaviour
         _unitControls.BasicMovement.Move.performed += Move;
     }
 
-    private void OnDisable()
+    private void OnCrash()
     {
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= Move;
@@ -50,6 +54,8 @@ public class UnitController : MonoBehaviour
 
     public void Move(InputAction.CallbackContext ctx)
     {
+        if (isMoving)return;
+        isMoving = true;
         Vector2 input = ctx.ReadValue<Vector2>();
         Vector3 moveDirection = Vector3.zero;
         Vector3Int targetGrid = new Vector3Int(0,0,0);
@@ -96,6 +102,7 @@ public class UnitController : MonoBehaviour
         else
         {
             isCrashed = true;
+            OnCrash();
         }
     }
     void CrashFeedback(Vector3Int crashGridCords)
@@ -107,6 +114,7 @@ public class UnitController : MonoBehaviour
     
     void MoveFeedBack(Node targetNode)
     {
+        DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f);
     }
