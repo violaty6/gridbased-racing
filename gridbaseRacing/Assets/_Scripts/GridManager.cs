@@ -21,6 +21,8 @@ public class GridManager : MonoBehaviour
             gridTileDict.Add(node.cords,node);
         }
     }
+    
+
     public Node GetTileAt(Vector3Int cords)
     {
         Node result = null;
@@ -87,10 +89,15 @@ public class GridManager : MonoBehaviour
          return path;
      }
 
-     public List<Node> OneDirectionToLast(Vector3Int direction)
+     public List<Node> OneDirectionToLast(Node startNode ,Vector3Int direction)
      {
-         
-         
+         List<Node> result = new List<Node>{startNode};
+         while (GetOneNodeOneDirection(result.Last(),direction) !=null)
+         {
+             result.Add(GetOneNodeOneDirection(result.Last(),direction));
+         }
+
+         return result;
      }
 
      private Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)

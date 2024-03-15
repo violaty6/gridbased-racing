@@ -29,6 +29,7 @@ public class UnitController : MonoBehaviour
     private void Start()
     {
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
+        Debug.Log(_gridManager.OneDirectionToLast(currentNode,Direction.directionsOffset[0]).Last());
     }
 
     private void OnEnable()
