@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using DG.Tweening.Plugins.Core.PathCore;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -10,6 +12,7 @@ using UnityEngine.Rendering;
 public class GridManager : MonoBehaviour
 {
     [SerializeField]private SerializedDictionary<Vector3Int, Node> gridTileDict;
+    public Node FinishLine;
     private void Awake()
     {
         gridTileDict = new SerializedDictionary<Vector3Int, Node>();
@@ -18,19 +21,6 @@ public class GridManager : MonoBehaviour
             gridTileDict.Add(node.cords,node);
         }
     }
-
-    private void Start()
-    {
-        Node nextNode = GetTileAt(Vector3Int.zero);
-        for (int i = 0; i < 20; i++)
-        {
-            Node checkedNodeResult = CheckNode(nextNode, GetTileAt(new Vector3Int(0, 0, 11)));
-            nextNode = checkedNodeResult;
-            if (checkedNodeResult == GetTileAt(new Vector3Int(0, 0, 11))) break;
-        }
-       
-    }
-
     public Node GetTileAt(Vector3Int cords)
     {
         Node result = null;
@@ -38,37 +28,93 @@ public class GridManager : MonoBehaviour
         return result;
     }
 
-    // public List<Node> PathNodes(Node startNode , Node targetNode)
-    // {
-    //     
-    // }
+     public List<Node> PathNodes(Node startNode , Node targetNode, int power)
+     {
+         List<Node> path = null;
+         List<Node> openNodes = new List<Node>();
+         HashSet<Node> closedNodes = new HashSet<Node>();
+         openNodes.Add(startNode);
+         while (openNodes.Count > 0)
+         {
+             Node current = openNodes[0];
+             for (int i = 1; i < openNodes.Count; i++)
+             {
+                 if (openNodes[i].f_cost<current.f_cost || openNodes[i].f_cost  == current.f_cost && openNodes[i].h_cost < current.h_cost)
+                 {
+                     current = openNodes[i];
+                 }
+             }
+             openNodes.Remove(current);
+             closedNodes.Add(current);
+             if (current == targetNode)
+             {
+                 path =  RetracePath(startNode,targetNode);
+                 return path;
+             }
+             foreach (var neighbour in GetNeighbours(current , power))
+             {
+                 if (neighbour == null || closedNodes.Contains(neighbour))
+                 {
+                     continue;
+                 }
+                 float newMovementCostToNeighbour = current.g_cost + Distance(current.cords,neighbour.cords);
+                 if (newMovementCostToNeighbour < neighbour.g_cost || !openNodes.Contains(neighbour))
+                 {
+                     neighbour.g_cost = newMovementCostToNeighbour;
+                     neighbour.h_cost = Distance(neighbour.cords, targetNode.cords);
+                     neighbour._parent = current;
+                     if (!openNodes.Contains(neighbour))
+                     {
+                         openNodes.Add(neighbour);
+                     }
+                 }
+             }
+         }
+         return path;
+     }
 
-    private Node CheckNode(Node node , Node targetNode)
-    {
-        Node result = null;
-        float sum = int.MaxValue;
-        for (int i = 0; i < 4 ; i++)
-        {
-            Node nextNode = GetTileAt(node.cords + Direction.directionsOffset[i]);
-            if (nextNode == null || nextNode.currentType == Node.NodeType.Obstacle) continue;
-            float curNodeDistance = CalculateDistance(node.cords, nextNode.cords);
-            float curtargetNodeDistance = CalculateDistance(node.cords, targetNode.cords);
-            if (sum > (curNodeDistance + curtargetNodeDistance))
-            {
-                result = nextNode;
-                sum = curNodeDistance + curtargetNodeDistance;
-            }
-        }
+     List<Node> RetracePath(Node startNode, Node targetNode)
+     {
+         List<Node> path = new List<Node>();
+         Node currentNode = targetNode;
+         while (currentNode != startNode)
+         {
+             path.Add(currentNode);
+             currentNode.transform.GetChild(0).DOMoveY(0.1f, 0.1f);
+             currentNode = currentNode._parent;
+         }
+         path.Reverse();
+         return path;
+     }
 
-        result.transform.DOMoveY(0.2f, 0.1f);
-        return result;
-    }
-    float CalculateDistance(Vector3Int point1, Vector3Int point2)
-    {
-        float a = Mathf.Abs(point2.x - point1.x);
-        float b = Mathf.Abs(point2.z - point1.z);
-        float distance = Mathf.Sqrt(a * a + b * b);
-        return distance;
+     public List<Node> OneDirectionToLast(Vector3Int direction)
+     {
+         
+         
+     }
+
+     private Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)
+     {
+         Node nextNode = GetTileAt(startNode.cords +direction);
+         if (nextNode == null || nextNode.currentType == Node.NodeType.Obstacle) return null;
+         return nextNode;
+     }
+     
+     private List<Node> GetNeighbours(Node node , int power)
+     {
+         List<Node> neighbours = new List<Node>();
+         for (int i = 0; i < 4 ; i++)
+         {
+             Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
+             if (nextNode == null || nextNode.currentType == Node.NodeType.Obstacle) continue;
+             neighbours.Add(nextNode);
+         }
+         return neighbours;
+     }
+     
+    public static float Distance(Vector3 a, Vector3 b) {
+        Vector3 vector = new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+        return Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
     }
 }
 
@@ -81,4 +127,12 @@ public static class Direction
         new Vector3Int(0, 0, -1), //SOUTH
         new Vector3Int(-1, 0, 0) //WEST
     };
+    public static Vector3Int GetCords(Vector3 pos)
+    {
+        Vector3Int result = new Vector3Int(0, 0, 0);
+        result.x = Mathf.RoundToInt(pos.x);
+        result.y = Mathf.RoundToInt(pos.y);
+        result.z = Mathf.RoundToInt(pos.z);
+        return result;
+    }
 } 

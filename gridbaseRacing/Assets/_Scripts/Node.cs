@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Node: MonoBehaviour
 {
+    public float g_cost = 0;
+    public float h_cost = 0;
+    public float f_cost = 0;
+    public Node _parent;
     public Vector3Int cords;
     public NodeType currentType;
     public enum NodeType

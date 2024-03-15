@@ -26,18 +26,9 @@ public class UnitController : MonoBehaviour
         _gridManager = FindObjectOfType<GridManager>();
     }
 
-    Vector3Int GetCords()
-    {
-        Vector3Int result = new Vector3Int(0, 0, 0);
-        result.x = Mathf.RoundToInt(transform.position.x);
-        result.y = Mathf.RoundToInt(transform.position.z);
-        result.z = Mathf.RoundToInt(transform.position.y);
-        return result;
-    }
-
     private void Start()
     {
-        currentNode = _gridManager.GetTileAt(GetCords());
+        currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
     }
 
     private void OnEnable()
