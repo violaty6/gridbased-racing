@@ -21,8 +21,6 @@ public class GridManager : MonoBehaviour
             gridTileDict.Add(node.cords,node);
         }
     }
-    
-
     public Node GetTileAt(Vector3Int cords)
     {
         Node result = null;

@@ -7208,7 +7208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1805929501}
-  _UnitEnginePower: 1
+  _UnitEnginePower: 2
 --- !u!1001 &9128934789083328103
 PrefabInstance:
   m_ObjectHideFlags: 0

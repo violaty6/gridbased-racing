@@ -14,43 +14,50 @@ public class UnitController : MonoBehaviour
     
     [SerializeField] private bool isCrashed = false;
     [SerializeField] private bool isMoving = false;
+    
+    [SerializeField] private bool canTurbo = true;
+    [SerializeField] private bool isTurbo = false;
+    
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Node currentNode;
     [SerializeField] private int _UnitEnginePower;
     private UnitControls _unitControls;
-
-
+    
+    
+    
     private void Awake()
     {
         _unitControls = new UnitControls();
         _gridManager = FindObjectOfType<GridManager>();
     }
-
     private void Start()
     {
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
-        Debug.Log(_gridManager.OneDirectionToLast(currentNode,Direction.directionsOffset[0]).Last());
     }
-
     private void OnEnable()
     {
         _unitControls.Enable();
         _unitControls.BasicMovement.Move.performed += Move;
+        _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
     }
-
     private void OnCrash()
     {
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= Move;
+        _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
     }
-
-    public void Move(InputAction.CallbackContext ctx)
+    private void Move(InputAction.CallbackContext ctx)
     {
         if (isMoving)return;
         isMoving = true;
         Vector2 input = ctx.ReadValue<Vector2>();
+        if (isTurbo)
+        {
+            Turbo(input);
+            isTurbo = false;
+            return;
+        }
         Vector3 moveDirection = Vector3.zero;
-        Vector3Int targetGrid = new Vector3Int(0,0,0);
         List<Node> checkNodes = new List<Node>();
         List<Node.NodeType> checkNodeType = new List<Node.NodeType>();
         for (int i = 1; i <= _UnitEnginePower; i++)
@@ -66,10 +73,33 @@ public class UnitController : MonoBehaviour
             Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
             Vector3Int targetCord = currentNode.cords + moveDirectionInt;
             Node targetNode = _gridManager.GetTileAt(targetCord);
-            targetGrid = targetCord;
             CheckNode(targetNode,checkNodes, checkNodeType);
         }
-        CheckAndMove(checkNodes, checkNodeType,targetGrid);
+        CheckAndMove(checkNodes, checkNodeType);
+    }
+    private void CheckTurbo(InputAction.CallbackContext ctx)
+    {
+        if (canTurbo)
+        {
+            isTurbo = true;
+            canTurbo = false;
+        }
+    }
+    private void Turbo(Vector2 input)
+    {
+        isMoving = true;
+        Vector3 moveDirection = Vector3.zero;
+        if (input.x != 0 && input.y == 0)
+        {
+            moveDirection.x = input.x ;
+        }
+        else if (input.y != 0 && input.x == 0)
+        {
+            moveDirection.z = input.y ;
+        }
+        Node targetNode = _gridManager.OneDirectionToLast(currentNode, Direction.directionsOffset[0]).Last();
+        currentNode = targetNode;
+        MoveFeedBack(targetNode);
     }
     private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeType> checkNodeType)
     {
@@ -84,7 +114,7 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType,Vector3Int targetGrid)
+    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType)
     {
         if (!checkNodes.Contains(null) && !checkNodeType.Contains(Node.NodeType.Obstacle) && !checkNodeType.Contains(Node.NodeType.Void))
         {
@@ -97,13 +127,6 @@ public class UnitController : MonoBehaviour
             OnCrash();
         }
     }
-    void CrashFeedback(Vector3Int crashGridCords)
-    {
-        // transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
-        // transform.DOLookAt(targetNode.cords, 0.1f);
-    }
-
-    
     void MoveFeedBack(Node targetNode)
     {
         GameEvents.current.onMovePerformed();
@@ -111,9 +134,9 @@ public class UnitController : MonoBehaviour
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f);
     }
-
-    private void SetNode(Node targetNode)
+    void CrashFeedback(Vector3Int crashGridCords)
     {
-        currentNode = targetNode;
+        
     }
+    
 }
