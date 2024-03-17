@@ -11,9 +11,9 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public event Action onMove;
+    public  event Action onMove;
 
-    public void onMovePerformed()
+    public  void onMovePerformed()
     {
         if (onMove != null)
         {

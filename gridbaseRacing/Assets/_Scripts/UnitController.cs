@@ -97,7 +97,8 @@ public class UnitController : MonoBehaviour
         {
             moveDirection.z = input.y ;
         }
-        Node targetNode = _gridManager.OneDirectionToLast(currentNode, Direction.directionsOffset[0]).Last();
+        Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
+        Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
         currentNode = targetNode;
         MoveFeedBack(targetNode);
     }
