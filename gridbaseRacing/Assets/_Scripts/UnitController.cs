@@ -22,6 +22,7 @@ public class UnitController : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Node currentNode;
     [SerializeField] private int _UnitEnginePower;
+    [SerializeField] private Transform SmokeEffectSlot;
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
@@ -144,7 +145,7 @@ public class UnitController : MonoBehaviour
     }
     void MoveFeedBack(Node targetNode)
     {
-        GameEvents.current.onMovePerformed();
+        GameEvents.current.onMovePerformed(SmokeEffectSlot);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f);

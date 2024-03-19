@@ -11,13 +11,13 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public  event Action onMove;
+    public event Action<Transform> onMove;
 
-    public  void onMovePerformed()
+    public  void onMovePerformed(Transform trans)
     {
         if (onMove != null)
         {
-            onMove();
+            onMove(trans);
         }
     }
 }
