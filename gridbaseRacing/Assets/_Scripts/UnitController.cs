@@ -6,6 +6,7 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Sequence = DG.Tweening.Sequence;
 
 public class UnitController : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class UnitController : MonoBehaviour
     [SerializeField] private Node currentNode;
     [SerializeField] private int _UnitEnginePower;
     private UnitControls _unitControls;
+    private Sequence MoveSequence;
+    private Sequence EngineFeedbackSequence;
     
     
     
@@ -32,6 +35,9 @@ public class UnitController : MonoBehaviour
     }
     private void Start()
     {
+        UnitStartFeedback();
+        MoveSequence = DOTween.Sequence();
+        EngineFeedbackSequence = DOTween.Sequence();
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
     }
     private void OnEnable()
@@ -51,6 +57,7 @@ public class UnitController : MonoBehaviour
         if (isMoving)return;
         isMoving = true;
         Vector2 input = ctx.ReadValue<Vector2>();
+        Debug.Log(input);
         if (isTurbo)
         {
             Turbo(input);
@@ -75,7 +82,7 @@ public class UnitController : MonoBehaviour
             Node targetNode = _gridManager.GetTileAt(targetCord);
             CheckNode(targetNode,checkNodes, checkNodeType);
         }
-        CheckAndMove(checkNodes, checkNodeType);
+        CheckAndMove(checkNodes, checkNodeType,input);
     }
     private void CheckTurbo(InputAction.CallbackContext ctx)
     {
@@ -100,6 +107,7 @@ public class UnitController : MonoBehaviour
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
         currentNode = targetNode;
+        VehicleFeedBack(input);
         MoveFeedBack(targetNode);
     }
     private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeType> checkNodeType)
@@ -115,10 +123,11 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType)
+    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType , Vector2 input)
     {
         if (!checkNodes.Contains(null) && !checkNodeType.Contains(Node.NodeType.Obstacle) && !checkNodeType.Contains(Node.NodeType.Void))
         {
+            VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last());
             currentNode = checkNodes.Last();
         }
@@ -128,12 +137,36 @@ public class UnitController : MonoBehaviour
             OnCrash();
         }
     }
+
+    void UnitStartFeedback()
+    {
+        _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
+    }
     void MoveFeedBack(Node targetNode)
     {
         GameEvents.current.onMovePerformed();
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f);
+    }
+
+    void VehicleFeedBack(Vector2 input)
+    {
+        MoveSequence.Kill();
+        MoveSequence = DOTween.Sequence();
+        MoveSequence.Append(_top.transform.DOLocalMoveZ(-0.02f, 0.1f));
+        MoveSequence.Append(        
+            _top.transform.DOLocalRotate(new Vector3(-5, 0, 0), 0.5f).SetEase(Ease.OutExpo).OnComplete(() =>
+        {
+            _top.transform.DOLocalMoveZ(0.02f, 0.2f).SetEase(Ease.InBack);
+            _top.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.2f).SetEase(Ease.InBack);
+        }
+            )
+        );
+        foreach (var wheel in _wheels)
+        {
+            wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+        }
     }
     void CrashFeedback(Vector3Int crashGridCords)
     {

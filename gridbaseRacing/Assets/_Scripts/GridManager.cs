@@ -27,6 +27,7 @@ public class GridManager : MonoBehaviour
         gridTileDict.TryGetValue(cords, out result);
         return result;
     }
+    
 
      public List<Node> PathNodes(Node startNode , Node targetNode, int power)
      {
@@ -80,7 +81,7 @@ public class GridManager : MonoBehaviour
          while (currentNode != startNode)
          {
              path.Add(currentNode);
-             currentNode.transform.GetChild(0).DOMoveY(0.1f, 0.1f);
+             //Debug
              currentNode = currentNode._parent;
          }
          path.Reverse();
