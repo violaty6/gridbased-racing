@@ -14,6 +14,7 @@ public class ParticleManager : MonoBehaviour
     private void Start()
     { 
         GameEvents.current.onMove += MoveParticle;
+        GameEvents.current.onCrash += CrashParticle;
          for(int i = 0; i < 6; i++)
          {
              AddPool(_smokeParticle,_smokeParticlePool);
@@ -43,7 +44,16 @@ public class ParticleManager : MonoBehaviour
     void MoveParticle(Transform objTrans)
     {
         GameObject poolObject = GetPooledObject(_smokeParticlePool);
-        Debug.Log(poolObject);
+        if (poolObject != null)
+        {
+            poolObject.transform.position = objTrans.position;
+            poolObject.SetActive(true);
+        }
+    }
+
+    void CrashParticle(Transform objTrans)
+    {
+        GameObject poolObject = GetPooledObject(_explosionParticlePool);
         if (poolObject != null)
         {
             poolObject.transform.position = objTrans.position;

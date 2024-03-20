@@ -10,8 +10,10 @@ using Sequence = DG.Tweening.Sequence;
 
 public class UnitController : MonoBehaviour
 {
+
     [SerializeField] private List<GameObject> _wheels;
     [SerializeField] private GameObject _top;
+    [SerializeField] private GameObject _body;
     
     [SerializeField] private bool isCrashed = false;
     [SerializeField] private bool isMoving = false;
@@ -52,6 +54,7 @@ public class UnitController : MonoBehaviour
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= Move;
         _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
+        CrashFeedback();
     }
     private void Move(InputAction.CallbackContext ctx)
     {
@@ -169,9 +172,24 @@ public class UnitController : MonoBehaviour
             wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
-    void CrashFeedback(Vector3Int crashGridCords)
+    void CrashFeedback()
     {
+        MoveSequence.Kill();
+        EngineFeedbackSequence.Kill();
+        DOTween.Kill(_top.transform);
         
+        GameEvents.current.onCrashPerformed(_top.transform);
+        foreach (var wheels in _wheels)
+        {
+           Rigidbody expolionObject =  wheels.AddComponent<Rigidbody>();
+           expolionObject.AddExplosionForce(1000f,_top.transform.position,10f);
+        }
+        foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
+        {
+            if (bodyParts.gameObject == _body.gameObject)continue;
+            DOTween.Kill(bodyParts);
+            Rigidbody expolionObject =  bodyParts.AddComponent<Rigidbody>();
+            expolionObject.AddExplosionForce(1000f,_top.transform.position,10f);
+        }
     }
-    
 }
