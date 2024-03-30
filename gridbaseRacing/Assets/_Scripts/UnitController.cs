@@ -29,8 +29,6 @@ public class UnitController : MonoBehaviour
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
     
-    
-    
     private void Awake()
     {
         _unitControls = new UnitControls();
@@ -49,12 +47,12 @@ public class UnitController : MonoBehaviour
         _unitControls.BasicMovement.Move.performed += Move;
         _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
     }
-    private void OnCrash()
+    private void OnCrash(Node _crashNode)
     {
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= Move;
         _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
-        CrashFeedback();
+        CrashFeedback(_crashNode);
     }
     private void Move(InputAction.CallbackContext ctx)
     {
@@ -129,7 +127,16 @@ public class UnitController : MonoBehaviour
 
     private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType , Vector2 input)
     {
-        if (!checkNodes.Contains(null) && !checkNodeType.Contains(Node.NodeType.Obstacle) && !checkNodeType.Contains(Node.NodeType.Void))
+        Node firstMatchingNode = null;
+        for (int i = 0; i < checkNodes.Count; i++)
+        {
+            if (checkNodes[i] == null || checkNodeType[i] == Node.NodeType.Obstacle || checkNodeType[i] == Node.NodeType.Void)
+            {
+                firstMatchingNode = checkNodes[i];
+                break;
+            }
+        }
+        if (firstMatchingNode == null)
         {
             VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last());
@@ -138,7 +145,7 @@ public class UnitController : MonoBehaviour
         else
         {
             isCrashed = true;
-            OnCrash();
+            OnCrash(firstMatchingNode);
         }
     }
 
@@ -150,8 +157,8 @@ public class UnitController : MonoBehaviour
     {
         GameEvents.current.onMovePerformed(SmokeEffectSlot);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        transform.DOMove(targetNode.cords, 1.25f).SetEase(Ease.OutQuart);
-        transform.DOLookAt(targetNode.cords, 0.1f);
+        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
+        transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
     }
 
     void VehicleFeedBack(Vector2 input)
@@ -172,24 +179,31 @@ public class UnitController : MonoBehaviour
             wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
-    void CrashFeedback()
+    void CrashFeedback(Node node)
     {
-        MoveSequence.Kill();
-        EngineFeedbackSequence.Kill();
-        DOTween.Kill(_top.transform);
-        
-        GameEvents.current.onCrashPerformed(_top.transform);
-        foreach (var wheels in _wheels)
+        transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
+        transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
+        DOVirtual.DelayedCall(0.25f, () =>
         {
-           Rigidbody expolionObject =  wheels.AddComponent<Rigidbody>();
-           expolionObject.AddExplosionForce(1000f,_top.transform.position,10f);
-        }
-        foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
-        {
-            if (bodyParts.gameObject == _body.gameObject)continue;
-            DOTween.Kill(bodyParts);
-            Rigidbody expolionObject =  bodyParts.AddComponent<Rigidbody>();
-            expolionObject.AddExplosionForce(1000f,_top.transform.position,10f);
-        }
+            MoveSequence.Kill();
+            EngineFeedbackSequence.Kill();
+            DOTween.Kill(_top.transform);
+            node.transform.DOPunchScale(Vector3.one/10, 0.5f);
+            GameEvents.current.onCrashPerformed(_top.transform);
+            foreach (var wheels in _wheels)
+            {
+                Rigidbody expolionObject = wheels.AddComponent<Rigidbody>();
+                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+            }
+
+            foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
+            {
+                if (bodyParts.gameObject == _body.gameObject) continue;
+                DOTween.Kill(bodyParts);
+                Rigidbody expolionObject = bodyParts.AddComponent<Rigidbody>();
+                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+            }
+        });
+
     }
 }
