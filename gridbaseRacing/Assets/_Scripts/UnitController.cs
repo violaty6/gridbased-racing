@@ -40,6 +40,7 @@ public class UnitController : MonoBehaviour
         MoveSequence = DOTween.Sequence();
         EngineFeedbackSequence = DOTween.Sequence();
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
+        currentNode.onNodeObject++;
     }
     private void OnEnable()
     {
@@ -68,7 +69,7 @@ public class UnitController : MonoBehaviour
         }
         Vector3 moveDirection = Vector3.zero;
         List<Node> checkNodes = new List<Node>();
-        List<Node.NodeType> checkNodeType = new List<Node.NodeType>();
+        List<Node.NodeTag> checkNodeType = new List<Node.NodeTag>();
         for (int i = 1; i <= _UnitEnginePower; i++)
         {
             if (input.x != 0 && input.y == 0)
@@ -112,25 +113,25 @@ public class UnitController : MonoBehaviour
         VehicleFeedBack(input);
         MoveFeedBack(targetNode);
     }
-    private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeType> checkNodeType)
+    private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeTag> checkNodeType)
     {
         checkNodes.Add(targetNode);
         if (targetNode == null)
         {
-            checkNodeType.Add(Node.NodeType.Void);
+            checkNodeType.Add(Node.NodeTag.Void);
         }
         else
         {
-            checkNodeType.Add(targetNode.currentType);
+            checkNodeType.Add(targetNode.currentTag);
         }
     }
 
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeType> checkNodeType , Vector2 input)
+    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeTag> checkNodeType , Vector2 input)
     {
         Node firstMatchingNode = null;
         for (int i = 0; i < checkNodes.Count; i++)
         {
-            if (checkNodes[i] == null || checkNodeType[i] == Node.NodeType.Obstacle || checkNodeType[i] == Node.NodeType.Void)
+            if (checkNodes[i] == null || checkNodeType[i] == Node.NodeTag.Obstacle || checkNodeType[i] == Node.NodeTag.Void)
             {
                 firstMatchingNode = checkNodes[i];
                 break;
@@ -140,6 +141,7 @@ public class UnitController : MonoBehaviour
         {
             VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last());
+            currentNode.onNodeObject--;
             currentNode = checkNodes.Last();
         }
         else
@@ -155,10 +157,15 @@ public class UnitController : MonoBehaviour
     }
     void MoveFeedBack(Node targetNode)
     {
-        GameEvents.current.onMovePerformed(SmokeEffectSlot);
+        GameEvents.current.onMovePerformed(SmokeEffectSlot,0);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
+        targetNode.onNodeObject++;
+        if (targetNode.onNodeObject >1)
+        {
+            OnCrash(targetNode);
+        }
     }
 
     void VehicleFeedBack(Vector2 input)
@@ -189,7 +196,7 @@ public class UnitController : MonoBehaviour
             EngineFeedbackSequence.Kill();
             DOTween.Kill(_top.transform);
             node.transform.DOPunchScale(Vector3.one/10, 0.5f);
-            GameEvents.current.onCrashPerformed(_top.transform);
+            GameEvents.current.onCrashPerformed(_top.transform,0);
             foreach (var wheels in _wheels)
             {
                 Rigidbody expolionObject = wheels.AddComponent<Rigidbody>();

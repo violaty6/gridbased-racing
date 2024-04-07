@@ -11,6 +11,8 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] private GameObject _explosionParticle;
     [SerializeField] List<GameObject> _explosionParticlePool = new List<GameObject>();
 
+    [SerializeField] private int listenerId;
+
     private void Start()
     { 
         GameEvents.current.onMove += MoveParticle;
@@ -41,8 +43,9 @@ public class ParticleManager : MonoBehaviour
         return null;
     }
     
-    void MoveParticle(Transform objTrans)
+    void MoveParticle(Transform objTrans,int id)
     {
+        if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_smokeParticlePool);
         if (poolObject != null)
         {
@@ -51,8 +54,9 @@ public class ParticleManager : MonoBehaviour
         }
     }
 
-    void CrashParticle(Transform objTrans)
+    void CrashParticle(Transform objTrans,int id)
     {
+        if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_explosionParticlePool);
         if (poolObject != null)
         {

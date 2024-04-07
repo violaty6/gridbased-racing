@@ -2,10 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
-using DG.Tweening.Plugins.Core.PathCore;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -102,7 +98,7 @@ public class GridManager : MonoBehaviour
      private Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)
      {
          Node nextNode = GetTileAt(startNode.cords +direction);
-         if (nextNode == null || nextNode.currentType == Node.NodeType.Obstacle) return null;
+         if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle) return null;
          return nextNode;
      }
      
@@ -112,7 +108,7 @@ public class GridManager : MonoBehaviour
          for (int i = 0; i < 4 ; i++)
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
-             if (nextNode == null || nextNode.currentType == Node.NodeType.Obstacle) continue;
+             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle) continue;
              neighbours.Add(nextNode);
          }
          return neighbours;

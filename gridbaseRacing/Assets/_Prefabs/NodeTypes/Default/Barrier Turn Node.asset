@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191ab612804888640adee98d486aaa34, type: 3}
+  m_Name: Barrier Turn Node
+  m_EditorClassIdentifier: 
+  tag: 1
+  typeName: Barrier Turn
+  NodeTypeGameObject: {fileID: 3547290095449179392, guid: 63bad2034dbb2154690b21a0d04d966e,
+    type: 3}
