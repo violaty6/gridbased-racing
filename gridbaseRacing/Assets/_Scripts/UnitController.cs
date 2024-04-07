@@ -8,7 +8,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Sequence = DG.Tweening.Sequence;
 
-public class UnitController : MonoBehaviour
+public interface IObject
+{
+    public Vector2 lastInput { get; set; }
+    public void Move(Vector2 input);
+    public void Crash(Node crashNode);
+}
+
+public class UnitController : MonoBehaviour, IObject
 {
 
     [SerializeField] private List<GameObject> _wheels;
@@ -28,6 +35,8 @@ public class UnitController : MonoBehaviour
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
+
+    public Vector2 lastInput { get; set; }
     
     private void Awake()
     {
@@ -45,22 +54,27 @@ public class UnitController : MonoBehaviour
     private void OnEnable()
     {
         _unitControls.Enable();
-        _unitControls.BasicMovement.Move.performed += Move;
+        _unitControls.BasicMovement.Move.performed += MoveInput;
         _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
     }
     private void OnCrash(Node _crashNode)
     {
         _unitControls.Disable();
-        _unitControls.BasicMovement.Move.performed -= Move;
+        _unitControls.BasicMovement.Move.performed -= MoveInput;
         _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
         CrashFeedback(_crashNode);
     }
-    private void Move(InputAction.CallbackContext ctx)
+    private void MoveInput(InputAction.CallbackContext ctx)
     {
-        if (isMoving)return;
-        isMoving = true;
         Vector2 input = ctx.ReadValue<Vector2>();
-        Debug.Log(input);
+        MoveLocal(input,true);
+    }
+
+    private void MoveLocal(Vector2 input, bool selfCommand)
+    {
+        if (isMoving && selfCommand)return;
+        isMoving = true;
+        lastInput = input;
         if (isTurbo)
         {
             Turbo(input);
@@ -85,7 +99,7 @@ public class UnitController : MonoBehaviour
             Node targetNode = _gridManager.GetTileAt(targetCord);
             CheckNode(targetNode,checkNodes, checkNodeType);
         }
-        CheckAndMove(checkNodes, checkNodeType,input);
+        CheckAndMove(checkNodes, checkNodeType,input,selfCommand);
     }
     private void CheckTurbo(InputAction.CallbackContext ctx)
     {
@@ -111,7 +125,7 @@ public class UnitController : MonoBehaviour
         Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
         currentNode = targetNode;
         VehicleFeedBack(input);
-        MoveFeedBack(targetNode);
+        MoveFeedBack(targetNode,true);
     }
     private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeTag> checkNodeType)
     {
@@ -125,8 +139,7 @@ public class UnitController : MonoBehaviour
             checkNodeType.Add(targetNode.currentTag);
         }
     }
-
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeTag> checkNodeType , Vector2 input)
+    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeTag> checkNodeType , Vector2 input , bool selfCommand)
     {
         Node firstMatchingNode = null;
         for (int i = 0; i < checkNodes.Count; i++)
@@ -140,9 +153,10 @@ public class UnitController : MonoBehaviour
         if (firstMatchingNode == null)
         {
             VehicleFeedBack(input);
-            MoveFeedBack(checkNodes.Last());
+            MoveFeedBack(checkNodes.Last(),selfCommand);
             currentNode.onNodeObject--;
             currentNode = checkNodes.Last();
+            currentNode.Interact(this);
         }
         else
         {
@@ -150,16 +164,15 @@ public class UnitController : MonoBehaviour
             OnCrash(firstMatchingNode);
         }
     }
-
     void UnitStartFeedback()
     {
         _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
-    void MoveFeedBack(Node targetNode)
+    void MoveFeedBack(Node targetNode,bool selfCommand)
     {
-        GameEvents.current.onMovePerformed(SmokeEffectSlot,0);
+        GameEvents.current.onMovePerformed(SmokeEffectSlot,0,selfCommand);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
+        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart).OnComplete(() => {if(!selfCommand)_unitControls.Enable();});
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
         targetNode.onNodeObject++;
         if (targetNode.onNodeObject >1)
@@ -211,6 +224,18 @@ public class UnitController : MonoBehaviour
                 expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
             }
         });
+    }
 
+
+
+    public void Move(Vector2 input)
+    {
+        MoveLocal(input,false); 
+        _unitControls.Disable();
+    }
+
+    public void Crash(Node crashNode)
+    {
+        
     }
 }

@@ -8,9 +8,9 @@ public class DefaultNodeSocket : MonoBehaviour, INode
     {
         Debug.Log("DefaultInit");
     }
-    public void Interact()
+    public void Interact(IObject interactOwner)
     {
-        
+        Debug.Log("interactedDef");
     }
     
     

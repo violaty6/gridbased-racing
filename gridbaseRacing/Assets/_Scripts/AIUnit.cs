@@ -17,8 +17,9 @@ public class AIUnit : MonoBehaviour
         endPoint = _gridManager.FinishLine;
     }
 
-    private void OnPlayerMove(Transform objTrans, int id)
+    private void OnPlayerMove(Transform objTrans, int id , bool selfCommand)
     {
+        if (!selfCommand) return;
         AIPath =  _gridManager.PathNodes(startPoint,endPoint,_UnitEnginePower);
         if(AIPath.Count<=0) return;
         startPoint.onNodeObject--;

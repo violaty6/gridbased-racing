@@ -10,6 +10,9 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] List<GameObject> _smokeParticlePool = new List<GameObject>();
     [SerializeField] private GameObject _explosionParticle;
     [SerializeField] List<GameObject> _explosionParticlePool = new List<GameObject>();
+    [SerializeField] private GameObject _OilParticle;
+    [SerializeField] List<GameObject> _OilParticlePool = new List<GameObject>();
+
 
     [SerializeField] private int listenerId;
 
@@ -17,10 +20,12 @@ public class ParticleManager : MonoBehaviour
     { 
         GameEvents.current.onMove += MoveParticle;
         GameEvents.current.onCrash += CrashParticle;
+        GameEvents.current.onOil += OilParticle;
          for(int i = 0; i < 6; i++)
          {
              AddPool(_smokeParticle,_smokeParticlePool);
              AddPool(_explosionParticle,_explosionParticlePool);
+             AddPool(_OilParticle,_OilParticlePool);
          }
     }
 
@@ -43,7 +48,7 @@ public class ParticleManager : MonoBehaviour
         return null;
     }
     
-    void MoveParticle(Transform objTrans,int id)
+    void MoveParticle(Transform objTrans,int id,bool selfCommand)
     {
         if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_smokeParticlePool);
@@ -58,6 +63,16 @@ public class ParticleManager : MonoBehaviour
     {
         if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_explosionParticlePool);
+        if (poolObject != null)
+        {
+            poolObject.transform.position = objTrans.position;
+            poolObject.SetActive(true);
+        }
+    }
+    void OilParticle(Transform objTrans,int id)
+    {
+        if(id != listenerId) return;
+        GameObject poolObject = GetPooledObject(_OilParticlePool);
         if (poolObject != null)
         {
             poolObject.transform.position = objTrans.position;

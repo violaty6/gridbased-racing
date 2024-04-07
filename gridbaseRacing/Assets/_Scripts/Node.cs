@@ -16,6 +16,7 @@ public class Node : MonoBehaviour,INode
     public Vector3Int cords;
     public NodeTag currentTag;
     [SerializeField] private INode currentType;
+    [SerializeField] private GameObject instObj;
 
     [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 3)]
     private int currentNodeIndex;
@@ -33,9 +34,8 @@ public class Node : MonoBehaviour,INode
         NodeManager.Instance.nodeInventory.TryGetValue(currentNodeIndex, out result);
         KillChild();
         currentTag = result.tag;
-        GameObject instObj = PrefabUtility.InstantiatePrefab(result.NodeTypeGameObject,transform) as GameObject;
+        instObj = PrefabUtility.InstantiatePrefab(result.NodeTypeGameObject,transform) as GameObject;
         currentType = instObj.GetComponent<INode>();
-        Init();
     }
     public enum NodeTag
     {
@@ -49,6 +49,7 @@ public class Node : MonoBehaviour,INode
         cords.x = Mathf.RoundToInt(transform.position.x);
         cords.y = Mathf.RoundToInt(transform.position.y);
         cords.z = Mathf.RoundToInt(transform.position.z);
+        currentTypeCheck();
     }
     private void KillChild()
     {
@@ -63,14 +64,19 @@ public class Node : MonoBehaviour,INode
         }
     }
 
+    private void currentTypeCheck()
+    {
+        currentType = instObj.GetComponent<INode>();
+    }
+
     public void Init()
     {
         currentType.Init();
     }
 
-    public void Interact()
+    public void Interact(IObject interactOwner)
     {
-        currentType.Interact();
+        currentType.Interact(interactOwner);
     }
 
 

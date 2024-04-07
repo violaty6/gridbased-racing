@@ -12,5 +12,5 @@ public class NodeType : ScriptableObject
 public interface INode
 {
     public void Init();
-    public void Interact();
+    public void Interact(IObject interactOwner);
 }

@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51233ee557216e042876f6a813ba0934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OilParticleFeedback: {fileID: 134050054341796103}
 --- !u!33 &1920938635485142561
 MeshFilter:
   m_ObjectHideFlags: 0
