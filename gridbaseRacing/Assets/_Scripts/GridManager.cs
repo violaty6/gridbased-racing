@@ -77,7 +77,6 @@ public class GridManager : MonoBehaviour
          while (currentNode != startNode)
          {
              path.Add(currentNode);
-             //Debug
              currentNode = currentNode._parent;
          }
          path.Reverse();
@@ -95,10 +94,10 @@ public class GridManager : MonoBehaviour
          return result;
      }
 
-     private Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)
+     public Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)
      {
          Node nextNode = GetTileAt(startNode.cords +direction);
-         if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle) return null;
+         if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) return null;
          return nextNode;
      }
      
@@ -108,7 +107,7 @@ public class GridManager : MonoBehaviour
          for (int i = 0; i < 4 ; i++)
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
-             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle) continue;
+             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) continue;
              neighbours.Add(nextNode);
          }
          return neighbours;

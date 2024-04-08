@@ -12,13 +12,13 @@ public class Node : MonoBehaviour,INode
     public float h_cost = 0;
     public float f_cost = 0;
     public Node _parent;
-    [Min(0)]public int onNodeObject = 0;
+    public IObject onNodeObject;
     public Vector3Int cords;
     public NodeTag currentTag;
     [SerializeField] private INode currentType;
     [SerializeField] private GameObject instObj;
 
-    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 3)]
+    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 4)]
     private int currentNodeIndex;
     private int currentRot = 0;
     [Button(ButtonSizes.Gigantic)]

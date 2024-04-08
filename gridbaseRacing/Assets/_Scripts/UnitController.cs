@@ -30,6 +30,7 @@ public class UnitController : MonoBehaviour, IObject
     
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private Node currentNode;
+    [SerializeField] private GameObject currentNodeFeedback;
     [SerializeField] private int _UnitEnginePower;
     [SerializeField] private Transform SmokeEffectSlot;
     private UnitControls _unitControls;
@@ -49,7 +50,7 @@ public class UnitController : MonoBehaviour, IObject
         MoveSequence = DOTween.Sequence();
         EngineFeedbackSequence = DOTween.Sequence();
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
-        currentNode.onNodeObject++;
+        currentNode.onNodeObject = this;
     }
     private void OnEnable()
     {
@@ -123,7 +124,10 @@ public class UnitController : MonoBehaviour, IObject
         }
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
+        currentNode.onNodeObject = null;
         currentNode = targetNode;
+        currentNode.Interact(this);
+        currentNodeFeedback.transform.position = currentNode.cords;
         VehicleFeedBack(input);
         MoveFeedBack(targetNode,true);
     }
@@ -154,9 +158,10 @@ public class UnitController : MonoBehaviour, IObject
         {
             VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last(),selfCommand);
-            currentNode.onNodeObject--;
+            currentNode.onNodeObject = null;
             currentNode = checkNodes.Last();
             currentNode.Interact(this);
+            currentNodeFeedback.transform.position = currentNode.cords;
         }
         else
         {
@@ -174,11 +179,17 @@ public class UnitController : MonoBehaviour, IObject
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
         transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart).OnComplete(() => {if(!selfCommand)_unitControls.Enable();});
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
-        targetNode.onNodeObject++;
-        if (targetNode.onNodeObject >1)
+        if (targetNode.onNodeObject == null)
         {
+            targetNode.onNodeObject = this;
+
+        }
+        else
+        {
+            targetNode.onNodeObject.Crash(targetNode);
             OnCrash(targetNode);
         }
+
     }
 
     void VehicleFeedBack(Vector2 input)
@@ -236,6 +247,6 @@ public class UnitController : MonoBehaviour, IObject
 
     public void Crash(Node crashNode)
     {
-        
+        OnCrash(crashNode);
     }
 }
