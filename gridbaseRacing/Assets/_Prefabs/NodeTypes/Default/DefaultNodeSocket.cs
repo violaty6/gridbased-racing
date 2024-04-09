@@ -10,4 +10,7 @@ public class DefaultNodeSocket : MonoBehaviour, INode
     public void Interact(IObject interactOwner)
     {
     }
+    public void UnInteract(IObject interactOwner)
+    {
+    }
 }

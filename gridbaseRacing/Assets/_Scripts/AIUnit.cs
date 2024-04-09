@@ -60,6 +60,7 @@ public class AIUnit : MonoBehaviour,IObject
         if(AIPath.Count<=0 || AIPath == null) return;
         startPoint.onNodeObject = null;
         lastInput = new Vector2(( AIPath[0].cords - startPoint.cords ).x,(AIPath[0].cords - startPoint.cords ).z);
+        startPoint.UnInteract(this);
         startPoint = AIPath[0];
         VehicleFeedBack(lastInput);
         MoveFeedBack(AIPath[0],false);
@@ -116,6 +117,7 @@ public class AIUnit : MonoBehaviour,IObject
         {
             VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last(),selfCommand);
+            startPoint.UnInteract(this);
             startPoint.onNodeObject = null;
             startPoint = checkNodes.Last();
             startPoint.Interact(this);

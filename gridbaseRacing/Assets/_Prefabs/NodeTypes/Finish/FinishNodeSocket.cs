@@ -12,4 +12,9 @@ public class FinishNodeSocket : MonoBehaviour,INode
     {
         Debug.Log(interactOwner + "win");
     }
+
+    public void UnInteract(IObject interactOwner)
+    {
+        
+    }
 }

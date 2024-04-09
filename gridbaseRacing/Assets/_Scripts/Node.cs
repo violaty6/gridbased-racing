@@ -80,5 +80,8 @@ public class Node : MonoBehaviour,INode
         currentType.Interact(interactOwner);
     }
 
-
+    public void UnInteract(IObject interactOwner)
+    {
+        currentType.UnInteract(interactOwner);
+    }
 }

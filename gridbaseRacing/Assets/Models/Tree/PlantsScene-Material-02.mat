@@ -26,13 +26,14 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - BILLBOARD_FACE_CAMERA_POSITION_ON
   - BILLBOARD_ROTATION_EACH_FACE
   - _FRESNEL
   - _USE_FILL_TEXTURE
   - _WIND
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -43,11 +44,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Fill_Texture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 4dffe6eab57ca4e4ba2f967307bd1c29, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Shape_Texture:
-        m_Texture: {fileID: 2800000, guid: dbfd9e30a225740c59937f03708ee4c1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7412b6efe4e2e43eeb25cb360f9a3222, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BakedGIRamp:
@@ -124,11 +125,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - BILLBOARD_FACE_CAMERA_POSITION: 0
+    - BILLBOARD_FACE_CAMERA_POSITION: 1
     - BILLBOARD_ROTATION: 1
     - Billboard_Scale: 0.3
-    - Clip_Threshold: 0.94
-    - Fill_Impact: 0.072
+    - Clip_Threshold: 0.754
+    - Fill_Impact: 0.002
     - Fill_Scale: 0
     - Fresnel_Power: 1
     - Fresnel_Sharpness: 0.5
@@ -143,8 +144,8 @@ Material:
     - Space_5: 0
     - Wind: 0
     - Wind_Speed: 0.1
-    - Wind_Strength: 0.2
-    - Wind_Turbulence: 1
+    - Wind_Strength: 0.085
+    - Wind_Turbulence: 0.36
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -187,7 +188,7 @@ Material:
     - _ReceiveShadows: 1
     - _RimEnabled: 0
     - _SelfShadingSize: 0
-    - _ShadowStrength: 0.123
+    - _ShadowStrength: 0.098
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularEnabled: 0
@@ -216,19 +217,20 @@ Material:
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!28 &1214708879263520971
 Texture2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: z__ShadingGradientTextureTex{"mode":0,"colorKeys":[{"color":{"r":0.04962177574634552,"g":0.10377359390258789,"b":0.04552331939339638,"a":1.0},"time":0.0},{"color":{"r":0.2028924822807312,"g":0.3207547068595886,"b":0.13465645909309388,"a":1.0},"time":0.5646753907203674},{"color":{"r":0.2326670140028,"g":0.37735849618911745,"b":0.14773941040039063,"a":1.0},"time":0.7588311433792114},{"color":{"r":0.3067951500415802,"g":0.48546096682548525,"b":0.2058378905057907,"a":1.0},"time":0.8264744281768799},{"color":{"r":0.7366263270378113,"g":0.8962264060974121,"b":0.19023676216602326,"a":1.0},"time":0.9323567748069763}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
+  m_Name: z__ShadingGradientTextureTex{"mode":0,"colorKeys":[{"color":{"r":0.0,"g":0.20754718780517579,"b":0.17956498265266419,"a":1.0},"time":0.0},{"color":{"r":0.48598167300224306,"g":0.7264150977134705,"b":0.352928102016449,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
-  serializedVersion: 3
+  serializedVersion: 2
   m_Width: 256
   m_Height: 1
   m_CompleteImageSize: 1024
@@ -257,7 +259,7 @@ Texture2D:
   m_ColorSpace: 1
   m_PlatformBlob: 
   image data: 1024
-  _typelessdata: ff0d1a0cff0d1b0cff0d1b0cff0d1c0cff0e1c0cff0e1c0cff0e1d0dff0f1d0dff0f1e0dff0f1e0dff0f1e0dff101f0dff101f0eff101f0eff10200eff11200eff11210eff11210eff12210eff12220fff12220fff12230fff13230fff13230fff13240fff132410ff142410ff142510ff142510ff152610ff152610ff152611ff152711ff162711ff162811ff162811ff162811ff172911ff172912ff172912ff182a12ff182a12ff182b12ff182b12ff192b13ff192c13ff192c13ff192d13ff1a2d13ff1a2d13ff1a2e14ff1a2e14ff1b2e14ff1b2f14ff1b2f14ff1c3014ff1c3014ff1c3015ff1c3115ff1d3115ff1d3215ff1d3215ff1d3215ff1e3316ff1e3316ff1e3316ff1f3416ff1f3416ff1f3516ff1f3516ff203517ff203617ff203617ff203717ff213717ff213717ff213818ff223818ff223818ff223918ff223918ff233a18ff233a19ff233a19ff233b19ff243b19ff243c19ff243c19ff253c19ff253d1aff253d1aff253d1aff263e1aff263e1aff263f1aff263f1bff273f1bff27401bff27401bff28411bff28411bff28411cff28421cff29421cff29421cff29431cff29431cff2a441cff2a441dff2a441dff2b451dff2b451dff2b451dff2b461dff2c461eff2c471eff2c471eff2c471eff2d481eff2d481eff2d491fff2d491fff2e491fff2e4a1fff2e4a1fff2f4a1fff2f4b1fff2f4b20ff2f4c20ff304c20ff304c20ff304d20ff304d20ff314e21ff314e21ff314e21ff324f21ff324f21ff324f21ff325022ff335022ff335122ff335122ff335122ff345222ff345222ff345222ff345323ff345323ff355323ff355423ff355423ff355423ff355423ff355523ff355523ff365523ff365623ff365623ff365623ff365623ff365723ff365724ff375724ff375824ff375824ff375824ff375924ff375924ff385924ff385924ff385a24ff385a24ff385a24ff385b24ff385b24ff395b24ff395b25ff395c25ff395c25ff395c25ff395d25ff3a5d25ff3a5d25ff3a5d25ff3a5e25ff3a5e25ff3a5e25ff3a5f25ff3b5f25ff3b5f25ff3b5f26ff3b6026ff3b6026ff3c6126ff3d6327ff3e6428ff3f6629ff40672aff41692aff426b2bff446c2cff456e2dff466f2eff47712fff487330ff497430ff4a7631ff4b7732ff4c7933ff4d7b34ff4f7d34ff538134ff578534ff5b8834ff5f8c34ff649034ff689434ff6c9833ff709c33ff74a033ff78a433ff7ca733ff80ab33ff84af33ff88b332ff8cb732ff90bb32ff94bf32ff98c332ff9cc632ffa0ca32ffa4ce31ffa9d231ffadd631ffb1da31ffb5de31ffb9e231ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531ffbce531
+  _typelessdata: ff00352eff00352eff01362eff01362eff02372eff02382fff03382fff03392fff04392fff043a2fff053a30ff053b30ff063b30ff063c30ff073c30ff073d30ff083d31ff083e31ff093e31ff093f31ff0a3f31ff0a4031ff0b4032ff0b4132ff0c4132ff0c4232ff0d4232ff0d4332ff0e4333ff0e4433ff0f4433ff0f4533ff104633ff104634ff114734ff114734ff114834ff124834ff124934ff134935ff134a35ff144a35ff144b35ff154b35ff154c35ff164c36ff164d36ff174d36ff174e36ff184e36ff184f36ff194f37ff195037ff1a5037ff1a5137ff1b5137ff1b5237ff1c5338ff1c5338ff1d5438ff1d5438ff1e5538ff1e5539ff1f5639ff1f5639ff205739ff205739ff215839ff21583aff22593aff22593aff235a3aff235a3aff235b3aff245b3bff245c3bff255c3bff255d3bff265d3bff265e3bff275e3cff275f3cff285f3cff28603cff29613cff29613dff2a623dff2a623dff2b633dff2b633dff2c643dff2c643eff2d653eff2d653eff2e663eff2e663eff2f673eff2f673fff30683fff30683fff31693fff31693fff326a3fff326a40ff336b40ff336b40ff346c40ff346c40ff346d41ff356d41ff356e41ff366f41ff366f41ff377041ff377042ff387142ff387142ff397242ff397242ff3a7342ff3a7343ff3b7443ff3b7443ff3c7543ff3c7543ff3d7643ff3d7644ff3e7744ff3e7744ff3f7844ff3f7844ff407944ff407945ff417a45ff417a45ff427b45ff427b45ff437c46ff437d46ff447d46ff447e46ff457e46ff457f46ff457f47ff468047ff468047ff478147ff478147ff488247ff488248ff498348ff498348ff4a8448ff4a8448ff4b8548ff4b8549ff4c8649ff4c8649ff4d8749ff4d8749ff4e884aff4e884aff4f894aff4f8a4aff508a4aff508b4aff518b4bff518c4bff528c4bff528d4bff538d4bff538e4bff548e4cff548f4cff558f4cff55904cff56904cff56914cff57914dff57924dff57924dff58934dff58934dff59944eff59944eff5a954eff5a954eff5b964eff5b964eff5c974fff5c984fff5d984fff5d994fff5e994fff5e9a4fff5f9a50ff5f9b50ff609b50ff609c50ff619c50ff619d50ff629d51ff629e51ff639e51ff639f51ff649f51ff64a052ff65a052ff65a152ff66a152ff66a252ff67a252ff67a353ff68a353ff68a453ff68a453ff69a553ff69a653ff6aa654ff6aa754ff6ba754ff6ba854ff6ca854ff6ca954ff6da955ff6daa55ff6eaa55ff6eab55ff6fab55ff6fac55ff70ac56ff70ad56ff71ad56ff71ae56ff72ae56ff72af57ff73af57ff73b057ff74b057ff74b157ff75b157ff75b258ff76b258ff76b358ff77b458ff77b458ff78b558ff78b559ff79b659ff79b659ff79b759ff7ab759ff7ab859ff7bb85aff7bb95aff7cb95a
   m_StreamData:
     serializedVersion: 2
     offset: 0

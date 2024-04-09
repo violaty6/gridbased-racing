@@ -124,6 +124,7 @@ public class UnitController : MonoBehaviour, IObject
         }
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
+        currentNode.UnInteract(this);
         currentNode.onNodeObject = null;
         currentNode = targetNode;
         currentNode.Interact(this);
@@ -158,6 +159,7 @@ public class UnitController : MonoBehaviour, IObject
         {
             VehicleFeedBack(input);
             MoveFeedBack(checkNodes.Last(),selfCommand);
+            currentNode.UnInteract(this);
             currentNode.onNodeObject = null;
             currentNode = checkNodes.Last();
             currentNode.Interact(this);
@@ -184,7 +186,7 @@ public class UnitController : MonoBehaviour, IObject
             targetNode.onNodeObject = this;
 
         }
-        else
+        else if(targetNode.onNodeObject != this)
         {
             targetNode.onNodeObject.Crash(targetNode);
             OnCrash(targetNode);

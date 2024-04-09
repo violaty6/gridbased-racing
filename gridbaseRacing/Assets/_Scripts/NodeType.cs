@@ -13,4 +13,5 @@ public interface INode
 {
     public void Init();
     public void Interact(IObject interactOwner);
+    public void UnInteract(IObject interactOwner);
 }

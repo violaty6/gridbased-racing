@@ -16,4 +16,9 @@ public class OilNodeSocket : MonoBehaviour, INode
         interactOwner.Move(interactOwner.lastInput);
         GameEvents.current.onOilPerformed(OilParticleFeedback,0);
     }
+
+    public void UnInteract(IObject interactOwner)
+    {
+
+    }
 }
