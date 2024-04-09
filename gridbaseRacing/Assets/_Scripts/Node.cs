@@ -18,8 +18,9 @@ public class Node : MonoBehaviour,INode
     [SerializeField] private INode currentType;
     [SerializeField] private GameObject instObj;
 
-    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 4)]
+    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
     private int currentNodeIndex;
+    
     private int currentRot = 0;
     [Button(ButtonSizes.Gigantic)]
     private void Rotate90Degree()
