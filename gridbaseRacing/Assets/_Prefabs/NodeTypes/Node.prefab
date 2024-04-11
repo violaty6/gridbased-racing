@@ -74,6 +74,7 @@ MonoBehaviour:
   _parent: {fileID: 0}
   cords: {x: 0, y: 0, z: 0}
   currentTag: 0
+  instObj: {fileID: 0}
   currentNodeIndex: 0
 --- !u!23 &5597223416998064763
 MeshRenderer:
