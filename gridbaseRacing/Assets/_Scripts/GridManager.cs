@@ -108,6 +108,7 @@ public class GridManager : MonoBehaviour
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
              if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) continue;
+             Node predictedNode = nextNode.PredictMove()
              neighbours.Add(nextNode);
          }
          return neighbours;

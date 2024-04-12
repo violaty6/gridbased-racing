@@ -12,6 +12,10 @@ public class FinishNodeSocket : MonoBehaviour,INode
     {
         Debug.Log(interactOwner + "win");
     }
+    public Node PredictMove(IObject interactOwner)
+    {
+        return null;
+    }
 
     public void UnInteract(IObject interactOwner)
     {

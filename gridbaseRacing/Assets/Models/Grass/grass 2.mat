@@ -126,7 +126,7 @@ Material:
     m_Floats:
     - BILLBOARD_FACE_CAMERA_POSITION: 1
     - BILLBOARD_ROTATION: 1
-    - Billboard_Scale: 0.537
+    - Billboard_Scale: 0.55
     - Clip_Threshold: 0.955
     - Fill_Impact: 0
     - Fill_Scale: 5

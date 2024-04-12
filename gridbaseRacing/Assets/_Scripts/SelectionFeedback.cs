@@ -6,6 +6,6 @@ public class SelectionFeedback : MonoBehaviour
 {
     void Start()
     {
-        transform.DOScale(0.45f,1f).SetLoops(-1,LoopType.Yoyo);
+        transform.DOScale(0.42f,1f).SetLoops(-1,LoopType.Yoyo);
     }
 }

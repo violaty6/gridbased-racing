@@ -80,6 +80,11 @@ public class Node : MonoBehaviour,INode
         currentType.Interact(interactOwner);
     }
 
+    public Node PredictMove(Node fromNode)
+    {
+       return currentType.PredictMove(fromNode);
+    }
+
     public void UnInteract(IObject interactOwner)
     {
         currentType.UnInteract(interactOwner);
