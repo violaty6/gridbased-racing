@@ -11,15 +11,15 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public event Action<Transform,int,bool> onMove;
+    public event Action<Transform,int> onMove;
     public event Action<Transform,int> onOil;
     public event Action<Transform,int> onCrash;
 
-    public  void onMovePerformed(Transform trans,int id,bool selfCommand)
+    public  void onMovePerformed(Transform trans,int id)
     {
         if (onMove != null)
         {
-            onMove(trans,id,selfCommand);
+            onMove(trans,id);
         }
     }
     public void onOilPerformed(Transform trans,int id)

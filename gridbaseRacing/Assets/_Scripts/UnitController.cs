@@ -11,7 +11,7 @@ using Sequence = DG.Tweening.Sequence;
 public interface IObject
 {
     public Vector2 lastInput { get; set; }
-    public void Move(Vector2 input);
+    public void Move(Node nextNode);
     public void Crash(Node crashNode);
 }
 
@@ -76,31 +76,25 @@ public class UnitController : MonoBehaviour, IObject
         if (isMoving && selfCommand)return;
         isMoving = true;
         lastInput = input;
-        if (isTurbo)
-        {
-            Turbo(input);
-            isTurbo = false;
-            return;
-        }
+        // if (isTurbo) // TURBO
+        // {
+        //     Turbo(input);
+        //     isTurbo = false;
+        //     return;
+        // }
         Vector3 moveDirection = Vector3.zero;
-        List<Node> checkNodes = new List<Node>();
-        List<Node.NodeTag> checkNodeType = new List<Node.NodeTag>();
-        for (int i = 1; i <= _UnitEnginePower; i++)
+        if (input.x != 0 && input.y == 0)
         {
-            if (input.x != 0 && input.y == 0)
-            {
-                moveDirection.x = input.x *i ;
-            }
-            else if (input.y != 0 && input.x == 0)
-            {
-                moveDirection.z = input.y *i ;
-            }
-            Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
-            Vector3Int targetCord = currentNode.cords + moveDirectionInt;
-            Node targetNode = _gridManager.GetTileAt(targetCord);
-            CheckNode(targetNode,checkNodes, checkNodeType);
+            moveDirection.x = input.x;
         }
-        CheckAndMove(checkNodes, checkNodeType,input,selfCommand);
+        else if (input.y != 0 && input.x == 0)
+        {
+            moveDirection.z = input.y;
+        }
+        Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
+        Vector3Int targetCord = currentNode.cords + moveDirectionInt;
+        Node targetNode = _gridManager.GetTileAt(targetCord);
+        CheckAndMove(targetNode);
     }
     private void CheckTurbo(InputAction.CallbackContext ctx)
     {
@@ -110,77 +104,75 @@ public class UnitController : MonoBehaviour, IObject
             canTurbo = false;
         }
     }
-    private void Turbo(Vector2 input)
+    // private void Turbo(Vector2 input)
+    // {
+    //     isMoving = true;
+    //     Vector3 moveDirection = Vector3.zero;
+    //     if (input.x != 0 && input.y == 0)
+    //     {
+    //         moveDirection.x = input.x ;
+    //     }
+    //     else if (input.y != 0 && input.x == 0)
+    //     {
+    //         moveDirection.z = input.y ;
+    //     }
+    //     Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
+    //     Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
+    //     currentNode.UnInteract(this);
+    //     currentNode.onNodeObject = null;
+    //     currentNode = targetNode;
+    //     currentNode.Interact(this);
+    //     currentNodeFeedback.transform.position = currentNode.cords;
+    //     VehicleFeedBack();
+    //     MoveFeedBack(targetNode);
+    // }
+    private Node.NodeTag CheckNode(Node targetNode)
     {
-        isMoving = true;
-        Vector3 moveDirection = Vector3.zero;
-        if (input.x != 0 && input.y == 0)
-        {
-            moveDirection.x = input.x ;
-        }
-        else if (input.y != 0 && input.x == 0)
-        {
-            moveDirection.z = input.y ;
-        }
-        Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
-        Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
-        currentNode.UnInteract(this);
-        currentNode.onNodeObject = null;
-        currentNode = targetNode;
-        currentNode.Interact(this);
-        currentNodeFeedback.transform.position = currentNode.cords;
-        VehicleFeedBack(input);
-        MoveFeedBack(targetNode,true);
-    }
-    private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeTag> checkNodeType)
-    {
-        checkNodes.Add(targetNode);
         if (targetNode == null)
         {
-            checkNodeType.Add(Node.NodeTag.Void);
+            return Node.NodeTag.Void;
         }
         else
         {
-            checkNodeType.Add(targetNode.currentTag);
+            return targetNode.currentTag;
         }
     }
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeTag> checkNodeType , Vector2 input , bool selfCommand)
+    private void CheckAndMove(Node checkNode)
     {
-        Node firstMatchingNode = null;
-        for (int i = 0; i < checkNodes.Count; i++)
+        Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
+
+        if (targetNodeTag == Node.NodeTag.Void)
         {
-            if (checkNodes[i] == null || checkNodeType[i] == Node.NodeTag.Obstacle || checkNodeType[i] == Node.NodeTag.Void)
-            {
-                firstMatchingNode = checkNodes[i];
-                break;
-            }
+            //Hata feedbacki gidemez move sayılmaz
         }
-        if (firstMatchingNode == null)
+        else if (targetNodeTag == Node.NodeTag.Obstacle )
         {
-            VehicleFeedBack(input);
-            MoveFeedBack(checkNodes.Last(),selfCommand);
-            currentNode.UnInteract(this);
-            currentNode.onNodeObject = null;
-            currentNode = checkNodes.Last();
-            currentNode.Interact(this);
-            currentNodeFeedback.transform.position = currentNode.cords;
+            isCrashed = true;
+            OnCrash(checkNode);
         }
         else
         {
-            isCrashed = true;
-            OnCrash(firstMatchingNode);
+            VehicleFeedBack();
+            GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
+            MoveFeedBack(checkNode);
+            currentNode.UnInteract(this);
+            currentNode.onNodeObject = null;
+            currentNode = checkNode;
+            currentNode.Interact(this);
+            currentNodeFeedback.transform.position = currentNode.cords;
         }
     }
     void UnitStartFeedback()
     {
         _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
-    void MoveFeedBack(Node targetNode,bool selfCommand)
+    void MoveFeedBack(Node targetNode)
     {
-        GameEvents.current.onMovePerformed(SmokeEffectSlot,0,selfCommand);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart).OnComplete(() => {if(!selfCommand)_unitControls.Enable();});
+        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
+        
+        // Başka object varsa gideceği yerde
         if (targetNode.onNodeObject == null)
         {
             targetNode.onNodeObject = this;
@@ -191,10 +183,9 @@ public class UnitController : MonoBehaviour, IObject
             targetNode.onNodeObject.Crash(targetNode);
             OnCrash(targetNode);
         }
-
     }
 
-    void VehicleFeedBack(Vector2 input)
+    void VehicleFeedBack()
     {
         MoveSequence.Kill();
         MoveSequence = DOTween.Sequence();
@@ -238,12 +229,9 @@ public class UnitController : MonoBehaviour, IObject
             }
         });
     }
-
-
-
-    public void Move(Vector2 input)
+    public void Move(Node nextNode)
     {
-        MoveLocal(input,false); 
+        CheckAndMove(nextNode); 
         _unitControls.Disable();
     }
 

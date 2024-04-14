@@ -12,13 +12,8 @@ public class OilNodeSocket : MonoBehaviour, INode
     }
     public void Interact(IObject interactOwner)
     {
-        interactOwner.Move(interactOwner.lastInput);
+        // interactOwner.Move(interactOwner.lastInput);
         GameEvents.current.onOilPerformed(OilParticleFeedback,0);
-    }
-
-    public Node PredictMove(Node fromNode)
-    {
-        throw new System.NotImplementedException();
     }
 
     public void UnInteract(IObject interactOwner)

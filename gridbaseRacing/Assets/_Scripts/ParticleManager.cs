@@ -48,7 +48,7 @@ public class ParticleManager : MonoBehaviour
         return null;
     }
     
-    void MoveParticle(Transform objTrans,int id,bool selfCommand)
+    void MoveParticle(Transform objTrans,int id)
     {
         if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_smokeParticlePool);

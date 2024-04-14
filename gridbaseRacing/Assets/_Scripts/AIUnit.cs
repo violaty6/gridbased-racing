@@ -21,14 +21,14 @@ public class AIUnit : MonoBehaviour,IObject
     private Node startPoint, endPoint;
     [SerializeField] private int _UnitEnginePower = 1;
     [SerializeField] private GameObject nextNodeFeedbackObj;
-
-    
+    [SerializeField] private Node currentNode;
+        
     [SerializeField] private Transform SmokeEffectSlot;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
-    public void Move(Vector2 input)
+    public void Move(Node nextNode)
     {
-        MoveLocal(lastInput,false);
+        CheckAndMove(nextNode);
     }
     public void Crash(Node crashNode)
     {
@@ -36,106 +36,90 @@ public class AIUnit : MonoBehaviour,IObject
     }
     void Start()
     {
+
+        MoveSequence = DOTween.Sequence();
+        EngineFeedbackSequence = DOTween.Sequence();
         GameEvents.current.onMove += OnPlayerMove;
         startPoint = _gridManager.GetTileAt(Direction.GetCords(transform.position));
         startPoint.onNodeObject = this;
         endPoint = _gridManager.FinishLine;
+        // Feedbacks
         UnitStartFeedback();
-        MoveSequence = DOTween.Sequence();
-        EngineFeedbackSequence = DOTween.Sequence();
-        nextNodeFeedback();
+        NextNodeFeedback();
     }
 
-    private void nextNodeFeedback()
+    private void NextNodeFeedback()
     {
         AIPath =  _gridManager.PathNodes(startPoint,endPoint,_UnitEnginePower);
-        nextNodeFeedbackObj.transform.position = AIPath[0].cords;
+        if(AIPath.Count >0)        nextNodeFeedbackObj.transform.position = AIPath[0].cords;
     }
 
-    private void OnPlayerMove(Transform objTrans, int id , bool selfCommand)
+    private void OnPlayerMove(Transform objTrans, int id)
     {
-        if (!selfCommand || isCrashed) return;
+        if (isCrashed) return;
         AIPath =  _gridManager.PathNodes(startPoint,endPoint,_UnitEnginePower);
-        Debug.Log(AIPath);
         if(AIPath.Count<=0 || AIPath == null) return;
         startPoint.onNodeObject = null;
-        lastInput = new Vector2(( AIPath[0].cords - startPoint.cords ).x,(AIPath[0].cords - startPoint.cords ).z);
+        lastInput = _gridManager.GetDirectionNodeToNode(startPoint, AIPath[0]);
         startPoint.UnInteract(this);
         startPoint = AIPath[0];
-        VehicleFeedBack(lastInput);
-        MoveFeedBack(AIPath[0],false);
+        VehicleFeedBack();
+        MoveFeedBack(AIPath[0]);
         AIPath[0].Interact(this);
     }
-    private void MoveLocal(Vector2 input, bool selfCommand)
+
+
+    private void MoveLocal(Vector2 input)
     {
-        if (isMoving && selfCommand || isCrashed)return;
+        if (isMoving)return;
         isMoving = true;
-        Vector3 moveDirection = Vector3.zero;
-        List<Node> checkNodes = new List<Node>();
-        List<Node.NodeTag> checkNodeType = new List<Node.NodeTag>();
-        for (int i = 1; i <= _UnitEnginePower; i++)
-        {
-            if (input.x != 0 && input.y == 0)
-            {
-                moveDirection.x = input.x *i ;
-            }
-            else if (input.y != 0 && input.x == 0)
-            {
-                moveDirection.z = input.y *i ;
-            }
-            Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
-            Vector3Int targetCord = startPoint.cords + moveDirectionInt;
-            Node targetNode = _gridManager.GetTileAt(targetCord);
-            CheckNode(targetNode,checkNodes, checkNodeType);
-        }
-        CheckAndMove(checkNodes, checkNodeType,input,selfCommand);
+        lastInput = input;
+        Node targetNode = _gridManager.GetOneNodeOneDirection(currentNode, input);
+        CheckAndMove(targetNode);
     }
-        private void CheckNode(Node targetNode,List<Node> checkNodes,List<Node.NodeTag> checkNodeType)
+
+    private Node.NodeTag CheckNode(Node targetNode)
     {
-        checkNodes.Add(targetNode);
         if (targetNode == null)
         {
-            checkNodeType.Add(Node.NodeTag.Void);
+            return Node.NodeTag.Void;
         }
         else
         {
-            checkNodeType.Add(targetNode.currentTag);
+            return targetNode.currentTag;
         }
     }
-    private void CheckAndMove(List<Node> checkNodes,List<Node.NodeTag> checkNodeType , Vector2 input , bool selfCommand)
+    private void CheckAndMove(Node checkNode)
     {
-        Node firstMatchingNode = null;
-        for (int i = 0; i < checkNodes.Count; i++)
+        Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
+
+        if (targetNodeTag == Node.NodeTag.Void)
         {
-            if (checkNodes[i] == null || checkNodeType[i] == Node.NodeTag.Obstacle || checkNodeType[i] == Node.NodeTag.Void)
-            {
-                firstMatchingNode = checkNodes[i];
-                break;
-            }
+            //Hata feedbacki gidemez move sayılmaz
         }
-        if (firstMatchingNode == null)
+        else if (targetNodeTag == Node.NodeTag.Obstacle )
         {
-            VehicleFeedBack(input);
-            MoveFeedBack(checkNodes.Last(),selfCommand);
-            startPoint.UnInteract(this);
-            startPoint.onNodeObject = null;
-            startPoint = checkNodes.Last();
-            startPoint.Interact(this);
+            isCrashed = true;
+            OnCrash(checkNode);
         }
         else
         {
-            isCrashed = true;
-            OnCrash(firstMatchingNode);
+            VehicleFeedBack();
+            MoveFeedBack(checkNode);
+            currentNode.UnInteract(this);
+            currentNode.onNodeObject = null;
+            currentNode = checkNode;
+            currentNode.Interact(this);
         }
     }
     void UnitStartFeedback()
     {
         _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
-    void MoveFeedBack(Node targetNode,bool selfCommand)
+    void MoveFeedBack(Node targetNode)
     {
-        GameEvents.current.onMovePerformed(SmokeEffectSlot,0,selfCommand);
-        DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear).OnComplete(()=> {nextNodeFeedback();});
+        GameEvents.current.onMovePerformed(SmokeEffectSlot,0);
+        DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear).OnComplete(()=> {NextNodeFeedback();});
         DOTween.Kill(this.transform);
         transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
@@ -151,7 +135,7 @@ public class AIUnit : MonoBehaviour,IObject
         }
     }
 
-    void VehicleFeedBack(Vector2 input)
+    void VehicleFeedBack()
     {
         MoveSequence.Kill();
         MoveSequence = DOTween.Sequence();

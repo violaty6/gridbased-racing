@@ -4,17 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
-
 public class GridManager : MonoBehaviour
 {
-    [SerializeField]private SerializedDictionary<Vector3Int, Node> gridTileDict;
+    // Singleton instance
+    public static GridManager Instance { get; private set; }
+
+    [SerializeField]
+    private SerializedDictionary<Vector3Int, Node> gridTileDict;
     public Node FinishLine;
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         gridTileDict = new SerializedDictionary<Vector3Int, Node>();
         foreach (var node in FindObjectsOfType<Node>())
         {
-            gridTileDict.Add(node.cords,node);
+            if (!gridTileDict.ContainsKey(node.cords))
+            {
+                gridTileDict.Add(node.cords,node);
+            }
         }
     }
     public Node GetTileAt(Vector3Int cords)
@@ -23,8 +39,10 @@ public class GridManager : MonoBehaviour
         gridTileDict.TryGetValue(cords, out result);
         return result;
     }
-    
-
+    public Vector2 GetDirectionNodeToNode(Node fromNode, Node toNode)
+    {
+        return new Vector2((toNode.cords - fromNode.cords ).x,(toNode.cords - fromNode.cords ).z);
+    }
      public List<Node> PathNodes(Node startNode , Node targetNode, int power)
      {
          List<Node> path = null;
@@ -83,21 +101,21 @@ public class GridManager : MonoBehaviour
          return path;
      }
 
-     public List<Node> OneDirectionToLast(Node startNode ,Vector3Int direction)
-     {
-         List<Node> result = new List<Node>{startNode};
-         while (GetOneNodeOneDirection(result.Last(),direction) !=null)
-         {
-             result.Add(GetOneNodeOneDirection(result.Last(),direction));
-         }
+     // public List<Node> OneDirectionToLast(Node startNode ,Vector3Int direction)
+     // {
+     //     List<Node> result = new List<Node>{startNode};
+     //     while (GetOneNodeOneDirection(result.Last(),direction) !=null)
+     //     {
+     //         result.Add(GetOneNodeOneDirection(result.Last(),direction));
+     //     }
+     //     return result;
+     // }
 
-         return result;
-     }
-
-     public Node GetOneNodeOneDirection(Node startNode ,Vector3Int direction)
+     public Node GetOneNodeOneDirection(Node startNode ,Vector2 moveDirection)
      {
-         Node nextNode = GetTileAt(startNode.cords +direction);
-         if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) return null;
+         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.y));
+         Vector3Int targetCord = startNode.cords + moveDirectionInt;
+         Node nextNode = GetTileAt(targetCord);
          return nextNode;
      }
      
@@ -108,7 +126,6 @@ public class GridManager : MonoBehaviour
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
              if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) continue;
-             Node predictedNode = nextNode.PredictMove()
              neighbours.Add(nextNode);
          }
          return neighbours;
@@ -119,6 +136,8 @@ public class GridManager : MonoBehaviour
         return Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
     }
 }
+
+
 
 public static class Direction
 {

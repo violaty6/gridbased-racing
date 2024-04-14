@@ -10,11 +10,6 @@ public class DefaultNodeSocket : MonoBehaviour, INode
     public void Interact(IObject interactOwner)
     {
     }
-    public Node PredictMove(Node fromNode)
-    {
-        
-    }
-
     public void UnInteract(IObject interactOwner)
     {
     }

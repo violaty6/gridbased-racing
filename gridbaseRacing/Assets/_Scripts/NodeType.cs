@@ -13,6 +13,5 @@ public interface INode
 {
     public void Init();
     public void Interact(IObject interactOwner);
-    public Node PredictMove(Node fromNode);
     public void UnInteract(IObject interactOwner);
 }
