@@ -12,6 +12,7 @@ public class NodeType : ScriptableObject
 public interface INode
 {
     public void Init();
-    public void Interact(IObject interactOwner);
+    public void Interact(Node fromNode, Node toNode,IObject interactOwner);
+    public Node PredictInteraction(Node fromNode, Node toNode);
     public void UnInteract(IObject interactOwner);
 }

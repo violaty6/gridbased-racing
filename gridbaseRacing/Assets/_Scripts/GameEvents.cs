@@ -11,7 +11,8 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public event Action<Transform,int> onMove;
+    public event Action<int> onMove;
+    public event Action<Transform,int> onSmoke;
     public event Action<Transform,int> onOil;
     public event Action<Transform,int> onCrash;
 
@@ -19,7 +20,15 @@ public class GameEvents : MonoBehaviour
     {
         if (onMove != null)
         {
-            onMove(trans,id);
+            onMove(id);
+        }
+    }
+
+    public void onSmokePerformed(Transform trans, int id)
+    {
+        if (onSmoke != null)
+        {
+            onSmoke(trans,id);
         }
     }
     public void onOilPerformed(Transform trans,int id)

@@ -10,12 +10,20 @@ public class OilNodeSocket : MonoBehaviour, INode
     {
         Debug.Log("OilInit");
     }
-    public void Interact(IObject interactOwner)
+    public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
-        // interactOwner.Move(interactOwner.lastInput);
+        Vector2 direction = GridManager.Instance.GetDirectionNodeToNode(fromNode, toNode);
+        Node targetNode = GridManager.Instance.GetOneNodeOneDirection(toNode,direction);
+        interactOwner.Move(targetNode,false);
         GameEvents.current.onOilPerformed(OilParticleFeedback,0);
     }
 
+    public Node PredictInteraction(Node fromNode, Node toNode)
+    {
+        Vector2 direction = GridManager.Instance.GetDirectionNodeToNode(fromNode, toNode);
+        return GridManager.Instance.GetOneNodeOneDirection(toNode,direction);
+    }
+    
     public void UnInteract(IObject interactOwner)
     {
 

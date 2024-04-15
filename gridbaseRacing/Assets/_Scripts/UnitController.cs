@@ -10,8 +10,9 @@ using Sequence = DG.Tweening.Sequence;
 
 public interface IObject
 {
+    public Node currentNode { get; set; }
     public Vector2 lastInput { get; set; }
-    public void Move(Node nextNode);
+    public void Move(Node nextNode,bool isPlayerAction);
     public void Crash(Node crashNode);
 }
 
@@ -29,16 +30,15 @@ public class UnitController : MonoBehaviour, IObject
     [SerializeField] private bool isTurbo = false;
     
     [SerializeField] private GridManager _gridManager;
-    [SerializeField] private Node currentNode;
     [SerializeField] private GameObject currentNodeFeedback;
     [SerializeField] private int _UnitEnginePower;
     [SerializeField] private Transform SmokeEffectSlot;
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
-
     public Vector2 lastInput { get; set; }
-    
+    public Node currentNode { get; set; }
+    public Node previusNode;
     private void Awake()
     {
         _unitControls = new UnitControls();
@@ -71,9 +71,9 @@ public class UnitController : MonoBehaviour, IObject
         MoveLocal(input,true);
     }
 
-    private void MoveLocal(Vector2 input, bool selfCommand)
+    private void MoveLocal(Vector2 input, bool isPlayerAction)
     {
-        if (isMoving && selfCommand)return;
+        if (isMoving && isPlayerAction)return;
         isMoving = true;
         lastInput = input;
         // if (isTurbo) // TURBO
@@ -94,7 +94,7 @@ public class UnitController : MonoBehaviour, IObject
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
-        CheckAndMove(targetNode);
+        CheckAndMove(targetNode,isPlayerAction);
     }
     private void CheckTurbo(InputAction.CallbackContext ctx)
     {
@@ -137,7 +137,7 @@ public class UnitController : MonoBehaviour, IObject
             return targetNode.currentTag;
         }
     }
-    private void CheckAndMove(Node checkNode)
+    private void CheckAndMove(Node checkNode,bool isPlayerAction)
     {
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
 
@@ -153,12 +153,16 @@ public class UnitController : MonoBehaviour, IObject
         else
         {
             VehicleFeedBack();
-            GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
-            MoveFeedBack(checkNode);
+            if(isPlayerAction)GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
+            GameEvents.current.onSmokePerformed(SmokeEffectSlot,0); // SMOKE event ----------------------------------
+            MoveFeedBack(checkNode,isPlayerAction);
+            //------------
             currentNode.UnInteract(this);
+            previusNode = currentNode;
             currentNode.onNodeObject = null;
+            //------------
             currentNode = checkNode;
-            currentNode.Interact(this);
+            currentNode.Interact(previusNode,currentNode,this);
             currentNodeFeedback.transform.position = currentNode.cords;
         }
     }
@@ -166,10 +170,10 @@ public class UnitController : MonoBehaviour, IObject
     {
         _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
-    void MoveFeedBack(Node targetNode)
+    void MoveFeedBack(Node targetNode,bool isPlayerAction)
     {
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
+        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart).OnComplete((() => {if(!isPlayerAction)_unitControls.Enable();}));
         transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
         
         // Başka object varsa gideceği yerde
@@ -229,12 +233,11 @@ public class UnitController : MonoBehaviour, IObject
             }
         });
     }
-    public void Move(Node nextNode)
+    public void Move(Node nextNode,bool isPlayerAction)
     {
-        CheckAndMove(nextNode); 
+        CheckAndMove(nextNode,isPlayerAction); 
         _unitControls.Disable();
     }
-
     public void Crash(Node crashNode)
     {
         OnCrash(crashNode);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEditor;
 
 [SelectionBase]
@@ -12,6 +13,8 @@ public class Node : MonoBehaviour,INode
     public float h_cost = 0;
     public float f_cost = 0;
     public Node _parent;
+    
+    [OdinSerialize]
     public IObject onNodeObject;
     public Vector3Int cords;
     public NodeTag currentTag;
@@ -44,7 +47,6 @@ public class Node : MonoBehaviour,INode
         Obstacle,
         Void,
     }
-    
     private void Awake()
     {
         cords.x = Mathf.RoundToInt(transform.position.x);
@@ -74,11 +76,16 @@ public class Node : MonoBehaviour,INode
     {
         currentType.Init();
     }
-    public void Interact(IObject interactOwner)
+    public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
-        currentType.Interact(interactOwner);
+        currentType.Interact(fromNode,toNode,interactOwner);
     }
-    
+
+    public Node PredictInteraction(Node fromNode, Node toNode)
+    {
+        return currentType.PredictInteraction(fromNode, toNode);
+    }
+
     public void UnInteract(IObject interactOwner)
     {
         currentType.UnInteract(interactOwner);

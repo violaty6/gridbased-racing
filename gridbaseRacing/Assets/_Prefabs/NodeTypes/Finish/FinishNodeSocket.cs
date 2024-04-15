@@ -8,9 +8,13 @@ public class FinishNodeSocket : MonoBehaviour,INode
     {
     }
 
-    public void Interact(IObject interactOwner)
+    public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
         Debug.Log(interactOwner + "win");
+    }
+    public Node PredictInteraction(Node fromNode, Node toNode)
+    {
+        return toNode;
     }
 
     public void UnInteract(IObject interactOwner)

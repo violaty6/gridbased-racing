@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering;
 public class GridManager : MonoBehaviour
@@ -41,7 +42,7 @@ public class GridManager : MonoBehaviour
     }
     public Vector2 GetDirectionNodeToNode(Node fromNode, Node toNode)
     {
-        return new Vector2((toNode.cords - fromNode.cords ).x,(toNode.cords - fromNode.cords ).z);
+        return new Vector2((toNode.cords - fromNode.cords ).x,(toNode.cords - fromNode.cords).z);
     }
      public List<Node> PathNodes(Node startNode , Node targetNode, int power)
      {
@@ -87,7 +88,6 @@ public class GridManager : MonoBehaviour
          }
          return path;
      }
-
      List<Node> RetracePath(Node startNode, Node targetNode)
      {
          List<Node> path = new List<Node>();
@@ -99,6 +99,23 @@ public class GridManager : MonoBehaviour
          }
          path.Reverse();
          return path;
+     }
+     private Node PredictCheck(Node fromNode,Node targetNode)
+     {
+         bool isFinish = false;
+         Node from = fromNode;
+         Node target = targetNode;
+         Node result = target.PredictInteraction(from,target);
+         isFinish = true;
+         while (target != result && isFinish)
+         {
+             isFinish = false;
+             from = target;
+             target = result;
+             result = result.PredictInteraction(from, target);
+             isFinish = true;
+         }
+         return result;
      }
 
      // public List<Node> OneDirectionToLast(Node startNode ,Vector3Int direction)
@@ -125,6 +142,7 @@ public class GridManager : MonoBehaviour
          for (int i = 0; i < 4 ; i++)
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
+             nextNode = PredictCheck(node, nextNode);
              if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) continue;
              neighbours.Add(nextNode);
          }
@@ -136,9 +154,6 @@ public class GridManager : MonoBehaviour
         return Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
     }
 }
-
-
-
 public static class Direction
 {
     public static List<Vector3Int> directionsOffset = new List<Vector3Int>

@@ -18,18 +18,21 @@ public class AIUnit : MonoBehaviour,IObject
     
     [SerializeField] private GridManager _gridManager;
     private List<Node> AIPath = new List<Node>();
-    private Node startPoint, endPoint;
+
     [SerializeField] private int _UnitEnginePower = 1;
-    [SerializeField] private GameObject nextNodeFeedbackObj;
-    [SerializeField] private Node currentNode;
+    [SerializeField] private GameObject nextNodeFeedbackObj; 
         
     [SerializeField] private Transform SmokeEffectSlot;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
-    public void Move(Node nextNode)
+    public void Move(Node nextNode, bool isPlayerAction)
     {
         CheckAndMove(nextNode);
     }
+    public Vector2 lastInput { get; set; }
+    public Node currentNode { get; set; }
+    public Node previusNode;
+    private Node endPoint;
     public void Crash(Node crashNode)
     {
         OnCrash(crashNode);
@@ -39,9 +42,9 @@ public class AIUnit : MonoBehaviour,IObject
 
         MoveSequence = DOTween.Sequence();
         EngineFeedbackSequence = DOTween.Sequence();
-        GameEvents.current.onMove += OnPlayerMove;
-        startPoint = _gridManager.GetTileAt(Direction.GetCords(transform.position));
-        startPoint.onNodeObject = this;
+        GameEvents.current.onMove += OnAIMove;
+        currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
+        currentNode.onNodeObject = this;
         endPoint = _gridManager.FinishLine;
         // Feedbacks
         UnitStartFeedback();
@@ -50,22 +53,16 @@ public class AIUnit : MonoBehaviour,IObject
 
     private void NextNodeFeedback()
     {
-        AIPath =  _gridManager.PathNodes(startPoint,endPoint,_UnitEnginePower);
+        AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
         if(AIPath.Count >0)        nextNodeFeedbackObj.transform.position = AIPath[0].cords;
     }
 
-    private void OnPlayerMove(Transform objTrans, int id)
+    private void OnAIMove(int id)
     {
         if (isCrashed) return;
-        AIPath =  _gridManager.PathNodes(startPoint,endPoint,_UnitEnginePower);
+        AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
         if(AIPath.Count<=0 || AIPath == null) return;
-        startPoint.onNodeObject = null;
-        lastInput = _gridManager.GetDirectionNodeToNode(startPoint, AIPath[0]);
-        startPoint.UnInteract(this);
-        startPoint = AIPath[0];
-        VehicleFeedBack();
-        MoveFeedBack(AIPath[0]);
-        AIPath[0].Interact(this);
+        Move(AIPath[0],false);
     }
 
 
@@ -77,7 +74,7 @@ public class AIUnit : MonoBehaviour,IObject
         Node targetNode = _gridManager.GetOneNodeOneDirection(currentNode, input);
         CheckAndMove(targetNode);
     }
-
+    
     private Node.NodeTag CheckNode(Node targetNode)
     {
         if (targetNode == null)
@@ -107,9 +104,11 @@ public class AIUnit : MonoBehaviour,IObject
             VehicleFeedBack();
             MoveFeedBack(checkNode);
             currentNode.UnInteract(this);
+            previusNode = currentNode;
             currentNode.onNodeObject = null;
+            
             currentNode = checkNode;
-            currentNode.Interact(this);
+            currentNode.Interact(previusNode,currentNode,this);
         }
     }
     void UnitStartFeedback()
@@ -118,7 +117,7 @@ public class AIUnit : MonoBehaviour,IObject
     }
     void MoveFeedBack(Node targetNode)
     {
-        GameEvents.current.onMovePerformed(SmokeEffectSlot,0);
+        GameEvents.current.onSmokePerformed(SmokeEffectSlot,0);
         DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear).OnComplete(()=> {NextNodeFeedback();});
         DOTween.Kill(this.transform);
         transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart);
@@ -184,6 +183,6 @@ public class AIUnit : MonoBehaviour,IObject
         isCrashed = true;
         CrashFeedback(_crashNode);
     }
-    public Vector2 lastInput { get; set; }
+
 
 }

@@ -12,9 +12,14 @@ public class CrackedNodeSocket : MonoBehaviour,INode
         ownerNode = transform.parent.GetComponent<Node>();
     }
 
-    public void Interact(IObject interactOwner)
+    public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
         transform.DOShakeRotation(0.5f, 5f).SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+    }
+
+    public Node PredictInteraction(Node fromNode, Node toNode)
+    {
+        return toNode;
     }
     public void UnInteract(IObject interactOwner)
     {

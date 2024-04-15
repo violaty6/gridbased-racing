@@ -18,7 +18,7 @@ public class ParticleManager : MonoBehaviour
 
     private void Start()
     { 
-        GameEvents.current.onMove += MoveParticle;
+        GameEvents.current.onSmoke += SmokeParticle;
         GameEvents.current.onCrash += CrashParticle;
         GameEvents.current.onOil += OilParticle;
          for(int i = 0; i < 6; i++)
@@ -48,7 +48,7 @@ public class ParticleManager : MonoBehaviour
         return null;
     }
     
-    void MoveParticle(Transform objTrans,int id)
+    void SmokeParticle(Transform objTrans,int id)
     {
         if(id != listenerId) return;
         GameObject poolObject = GetPooledObject(_smokeParticlePool);
