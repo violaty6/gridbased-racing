@@ -145,10 +145,11 @@ public class UnitController : MonoBehaviour, IObject
         {
             //Hata feedbacki gidemez move sayılmaz
         }
-        else if (targetNodeTag == Node.NodeTag.Obstacle )
+        else if (targetNodeTag == Node.NodeTag.Obstacle)
         {
             isCrashed = true;
             OnCrash(checkNode);
+            currentNodeFeedback.transform.position = checkNode.cords;
         }
         else
         {
@@ -168,7 +169,7 @@ public class UnitController : MonoBehaviour, IObject
     }
     void UnitStartFeedback()
     {
-        _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
+        //- _body.transform.DOLocalMoveY(-0.01f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
     void MoveFeedBack(Node targetNode,bool isPlayerAction)
     {
@@ -193,22 +194,16 @@ public class UnitController : MonoBehaviour, IObject
     {
         MoveSequence.Kill();
         MoveSequence = DOTween.Sequence();
-        MoveSequence.Append(_top.transform.DOLocalMoveZ(-0.02f, 0.1f));
-        MoveSequence.Append(        
-            _top.transform.DOLocalRotate(new Vector3(-5, 0, 0), 0.5f).SetEase(Ease.OutExpo).OnComplete(() =>
-        {
-            _top.transform.DOLocalMoveZ(0.02f, 0.2f).SetEase(Ease.InBack);
-            _top.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.2f).SetEase(Ease.InBack);
-        }
-            )
-        );
+        _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
         {
-            wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+            wheel.transform.DOLocalRotate(new Vector3(-360,0,0), 1f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
+    
     void CrashFeedback(Node node)
     {
+        currentNode.UnInteract(this);
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
         DOVirtual.DelayedCall(0.25f, () =>
@@ -228,7 +223,16 @@ public class UnitController : MonoBehaviour, IObject
             {
                 if (bodyParts.gameObject == _body.gameObject) continue;
                 DOTween.Kill(bodyParts);
-                Rigidbody expolionObject = bodyParts.AddComponent<Rigidbody>();
+                Rigidbody expolionObject;
+                if (!bodyParts.GetComponent<Rigidbody>())
+                {
+                    expolionObject= bodyParts.AddComponent<Rigidbody>();
+                }
+                else
+                {
+                    expolionObject = bodyParts.GetComponent<Rigidbody>();
+                }
+
                 expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
             }
         });
