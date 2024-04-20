@@ -113,7 +113,7 @@ public class AIUnit : MonoBehaviour,IObject
     }
     void UnitStartFeedback()
     {
-        _top.transform.DOLocalMoveY(-0.081f, 0.12f).SetLoops(-1,LoopType.Yoyo);
+        _top.transform.DOLocalMoveY(_top.transform.localPosition.y + 0.01f, 0.14f).SetLoops(-1,LoopType.Yoyo);
     }
     void MoveFeedBack(Node targetNode)
     {
@@ -138,18 +138,10 @@ public class AIUnit : MonoBehaviour,IObject
     {
         MoveSequence.Kill();
         MoveSequence = DOTween.Sequence();
-        MoveSequence.Append(_top.transform.DOLocalMoveZ(-0.02f, 0.1f));
-        MoveSequence.Append(        
-            _top.transform.DOLocalRotate(new Vector3(-5, 0, 0), 0.5f).SetEase(Ease.OutExpo).OnComplete(() =>
-                {
-            _top.transform.DOLocalMoveZ(0.02f, 0.2f).SetEase(Ease.InBack);
-            _top.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.2f).SetEase(Ease.InBack);
-        }
-            )
-        );
+        _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
         {
-            wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+            wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
     void CrashFeedback(Node node)
@@ -166,7 +158,7 @@ public class AIUnit : MonoBehaviour,IObject
             foreach (var wheels in _wheels)
             {
                 Rigidbody expolionObject = wheels.AddComponent<Rigidbody>();
-                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+                expolionObject.AddExplosionForce(350f, _top.transform.position, 10f);
             }
 
             foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
@@ -174,7 +166,7 @@ public class AIUnit : MonoBehaviour,IObject
                 if (bodyParts.gameObject == _body.gameObject) continue;
                 DOTween.Kill(bodyParts);
                 Rigidbody expolionObject = bodyParts.AddComponent<Rigidbody>();
-                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+                expolionObject.AddExplosionForce(350f, _top.transform.position, 10f);
             }
         });
     }

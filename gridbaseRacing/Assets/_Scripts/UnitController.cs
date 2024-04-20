@@ -33,6 +33,7 @@ public class UnitController : MonoBehaviour, IObject
     [SerializeField] private GameObject currentNodeFeedback;
     [SerializeField] private int _UnitEnginePower;
     [SerializeField] private Transform SmokeEffectSlot;
+    [SerializeField] private float ExplosionForce = 2000f;
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
@@ -169,7 +170,7 @@ public class UnitController : MonoBehaviour, IObject
     }
     void UnitStartFeedback()
     {
-        //- _body.transform.DOLocalMoveY(-0.01f, 0.12f).SetLoops(-1,LoopType.Yoyo);
+        _top.transform.DOLocalMoveY(_top.transform.localPosition.y + 0.01f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
     void MoveFeedBack(Node targetNode,bool isPlayerAction)
     {
@@ -216,12 +217,12 @@ public class UnitController : MonoBehaviour, IObject
             foreach (var wheels in _wheels)
             {
                 Rigidbody expolionObject = wheels.AddComponent<Rigidbody>();
-                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+                expolionObject.AddExplosionForce(ExplosionForce, _top.transform.position, 10f);
             }
 
-            foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
+            foreach (var bodyParts in _top.GetComponentsInChildren<Transform>())
             {
-                if (bodyParts.gameObject == _body.gameObject) continue;
+                if (bodyParts.gameObject == _top.gameObject) continue;
                 DOTween.Kill(bodyParts);
                 Rigidbody expolionObject;
                 if (!bodyParts.GetComponent<Rigidbody>())
@@ -231,9 +232,15 @@ public class UnitController : MonoBehaviour, IObject
                 else
                 {
                     expolionObject = bodyParts.GetComponent<Rigidbody>();
+                    if (expolionObject.GetComponent<HingeJoint>())
+                    {
+                        Destroy(expolionObject.GetComponent<HingeJoint>());
+                        expolionObject.GetComponent<MeshCollider>().enabled = true;
+                    }
+                    expolionObject.isKinematic = false;
                 }
 
-                expolionObject.AddExplosionForce(1000f, _top.transform.position, 10f);
+                expolionObject.AddExplosionForce(ExplosionForce, _top.transform.position, 10f);
             }
         });
     }
