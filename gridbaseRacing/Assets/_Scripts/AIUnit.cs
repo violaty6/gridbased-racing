@@ -141,7 +141,7 @@ public class AIUnit : MonoBehaviour,IObject
         _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
         {
-            wheel.transform.DOLocalRotate(new Vector3(0,-360,0), 1f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+            wheel.transform.DOLocalRotate(new Vector3(-360,0,0), 1f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
     void CrashFeedback(Node node)

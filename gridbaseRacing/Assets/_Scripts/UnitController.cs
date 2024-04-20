@@ -144,7 +144,7 @@ public class UnitController : MonoBehaviour, IObject
 
         if (targetNodeTag == Node.NodeTag.Void)
         {
-            //Hata feedbacki gidemez move sayılmaz
+            isMoving = false;
         }
         else if (targetNodeTag == Node.NodeTag.Obstacle)
         {

@@ -29,10 +29,9 @@ Material:
   - DR_LIGHT_ATTENUATION
   - _BASEMAP_PREMULTIPLY
   - _DETAILMAPBLENDINGMODE_MULTIPLY
-  - _EMISSION
   - _TEXTUREBLENDINGMODE_ADD
   m_InvalidKeywords: []
-  m_LightmapFlags: 2
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
@@ -146,7 +145,7 @@ Material:
     - _GradientEnabled: 0
     - _GradientSize: 10
     - _LightContribution: 1
-    - _LightmapDirectionPitch: 0
+    - _LightmapDirectionPitch: 14
     - _LightmapDirectionYaw: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
@@ -161,7 +160,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RimEnabled: 0
-    - _SelfShadingSize: 0.67
+    - _SelfShadingSize: 0.578
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularEnabled: 0
@@ -184,7 +183,7 @@ Material:
     - _FlatRimColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _FlatSpecularColor: {r: 0.425115, g: 0.42517, b: 0.425225, a: 0.85056}
     - _LightAttenuation: {r: 0, g: 1, b: 0, a: 0}
-    - _LightmapDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _LightmapDirection: {r: 0, g: 0.9702957, b: 0.2419219, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.104879715, g: 0.031772874, b: 0.13207549, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
