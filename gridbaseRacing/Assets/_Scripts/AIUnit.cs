@@ -160,12 +160,27 @@ public class AIUnit : MonoBehaviour,IObject
                 Rigidbody expolionObject = wheels.AddComponent<Rigidbody>();
                 expolionObject.AddExplosionForce(350f, _top.transform.position, 10f);
             }
-
-            foreach (var bodyParts in _body.GetComponentsInChildren<Transform>())
+            foreach (var bodyParts in _top.GetComponentsInChildren<Transform>())
             {
-                if (bodyParts.gameObject == _body.gameObject) continue;
+                if (bodyParts.gameObject == _top.gameObject) continue;
                 DOTween.Kill(bodyParts);
-                Rigidbody expolionObject = bodyParts.AddComponent<Rigidbody>();
+                Rigidbody expolionObject;
+                if (!bodyParts.GetComponent<Rigidbody>())
+                {
+                    expolionObject= bodyParts.AddComponent<Rigidbody>();
+                    expolionObject.isKinematic = false;
+                }
+                else
+                {
+                    expolionObject = bodyParts.GetComponent<Rigidbody>();
+                    if (expolionObject.GetComponent<HingeJoint>())
+                    {
+                        Destroy(expolionObject.GetComponent<HingeJoint>());
+                        expolionObject.GetComponent<MeshCollider>().enabled = true;
+                    }
+                    expolionObject.isKinematic = false;
+                }
+
                 expolionObject.AddExplosionForce(350f, _top.transform.position, 10f);
             }
         });
