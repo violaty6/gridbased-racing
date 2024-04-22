@@ -61,7 +61,7 @@ public class AIUnit : MonoBehaviour,IObject
     {
         if (isCrashed) return;
         AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
-        if(AIPath.Count<=0 || AIPath == null) return;
+        if(AIPath == null) return;
         Move(AIPath[0],false);
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -37,6 +38,7 @@ public class UnitController : MonoBehaviour, IObject
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
+    [SerializeField] private MMFeedbacks FeelCrashFeedback;
     public Vector2 lastInput { get; set; }
     public Node currentNode { get; set; }
     public Node previusNode;
@@ -207,8 +209,9 @@ public class UnitController : MonoBehaviour, IObject
         currentNode.UnInteract(this);
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
-        DOVirtual.DelayedCall(0.25f, () =>
+        DOVirtual.DelayedCall(0.3f, () =>
         {
+            FeelCrashFeedback.PlayFeedbacks();
             MoveSequence.Kill();
             EngineFeedbackSequence.Kill();
             DOTween.Kill(_top.transform);
