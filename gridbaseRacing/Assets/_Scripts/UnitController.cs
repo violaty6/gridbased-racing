@@ -61,6 +61,12 @@ public class UnitController : MonoBehaviour, IObject
         _unitControls.BasicMovement.Move.performed += MoveInput;
         _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
     }
+
+    private void OnDisable()
+    {
+        DOTween.KillAll();
+    }
+
     private void OnCrash(Node _crashNode)
     {
         _unitControls.Disable();
@@ -206,6 +212,7 @@ public class UnitController : MonoBehaviour, IObject
     
     void CrashFeedback(Node node)
     {
+        VehicleFeedBack();
         currentNode.UnInteract(this);
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);

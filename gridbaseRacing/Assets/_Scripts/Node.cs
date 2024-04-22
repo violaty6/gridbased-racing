@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+// using Sirenix.OdinInspector;
+// using Sirenix.Serialization;
 using UnityEditor;
 
 [SelectionBase]
@@ -14,18 +14,18 @@ public class Node : MonoBehaviour,INode
     public float f_cost = 0;
     public Node _parent;
     
-    [OdinSerialize]
     public IObject onNodeObject;
     public Vector3Int cords;
     public NodeTag currentTag;
     [SerializeField] private INode currentType;
     [SerializeField] private GameObject instObj;
+    [SerializeField] private NodeInventory nodeInv;
 
-    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
+    // [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
     private int currentNodeIndex;
     
     private int currentRot = 0;
-    [Button(ButtonSizes.Gigantic)]
+    // [Button(ButtonSizes.Gigantic)]
     private void Rotate90Degree()
     {
         currentRot++;
@@ -35,7 +35,7 @@ public class Node : MonoBehaviour,INode
     private void ChangeNode()
     {
         NodeType result = null;
-        NodeManager.Instance.nodeInventory.TryGetValue(currentNodeIndex, out result);
+        nodeInv.nodeInventory.TryGetValue(currentNodeIndex, out result);
         KillChild();
         currentTag = result.tag;
         instObj = PrefabUtility.InstantiatePrefab(result.NodeTypeGameObject,transform) as GameObject;

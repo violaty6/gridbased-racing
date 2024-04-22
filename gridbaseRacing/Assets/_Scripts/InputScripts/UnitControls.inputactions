@@ -147,6 +147,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "GeneralKeys",
+            "id": "b03e4cfa-981d-4303-8826-3927fcf59c61",
+            "actions": [
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "4c5fc31b-8caa-46a3-9c04-cab4fa49e29b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b2a9d93f-f7e6-4f69-818a-7f0c8e25b0c7",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

@@ -62,6 +62,7 @@ public class AIUnit : MonoBehaviour,IObject
         if (isCrashed) return;
         AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
         if(AIPath == null) return;
+        if(AIPath.Count<=0) return;
         Move(AIPath[0],false);
     }
 
@@ -146,6 +147,7 @@ public class AIUnit : MonoBehaviour,IObject
     }
     void CrashFeedback(Node node)
     {
+        VehicleFeedBack();
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
         DOVirtual.DelayedCall(0.25f, () =>

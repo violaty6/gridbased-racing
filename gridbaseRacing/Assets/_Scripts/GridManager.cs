@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 public class GridManager : MonoBehaviour
 {
-    // Singleton instance
     public static GridManager Instance { get; private set; }
 
     [SerializeField]
@@ -18,7 +17,6 @@ public class GridManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -30,10 +28,20 @@ public class GridManager : MonoBehaviour
         {
             if (!gridTileDict.ContainsKey(node.cords))
             {
-                gridTileDict.Add(node.cords,node);
+                gridTileDict.Add(node.cords, node);
+            }
+            else
+            {
+                Debug.LogWarning("Duplicate node coordinates found: " + node.cords.ToString());
             }
         }
     }
+
+    private void OnDestroy()
+    {
+        gridTileDict.Clear();
+    }
+
     public Node GetTileAt(Vector3Int cords)
     {
         Node result = null;

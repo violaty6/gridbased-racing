@@ -169,6 +169,34 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""GeneralKeys"",
+            ""id"": ""b03e4cfa-981d-4303-8826-3927fcf59c61"",
+            ""actions"": [
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""4c5fc31b-8caa-46a3-9c04-cab4fa49e29b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""b2a9d93f-f7e6-4f69-818a-7f0c8e25b0c7"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -177,6 +205,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         m_BasicMovement = asset.FindActionMap("BasicMovement", throwIfNotFound: true);
         m_BasicMovement_Move = m_BasicMovement.FindAction("Move", throwIfNotFound: true);
         m_BasicMovement_Turbo = m_BasicMovement.FindAction("Turbo", throwIfNotFound: true);
+        // GeneralKeys
+        m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
+        m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -288,9 +319,59 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         }
     }
     public BasicMovementActions @BasicMovement => new BasicMovementActions(this);
+
+    // GeneralKeys
+    private readonly InputActionMap m_GeneralKeys;
+    private List<IGeneralKeysActions> m_GeneralKeysActionsCallbackInterfaces = new List<IGeneralKeysActions>();
+    private readonly InputAction m_GeneralKeys_Restart;
+    public struct GeneralKeysActions
+    {
+        private @UnitControls m_Wrapper;
+        public GeneralKeysActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Restart => m_Wrapper.m_GeneralKeys_Restart;
+        public InputActionMap Get() { return m_Wrapper.m_GeneralKeys; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GeneralKeysActions set) { return set.Get(); }
+        public void AddCallbacks(IGeneralKeysActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GeneralKeysActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GeneralKeysActionsCallbackInterfaces.Add(instance);
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
+        }
+
+        private void UnregisterCallbacks(IGeneralKeysActions instance)
+        {
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
+        }
+
+        public void RemoveCallbacks(IGeneralKeysActions instance)
+        {
+            if (m_Wrapper.m_GeneralKeysActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGeneralKeysActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GeneralKeysActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GeneralKeysActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GeneralKeysActions @GeneralKeys => new GeneralKeysActions(this);
     public interface IBasicMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnTurbo(InputAction.CallbackContext context);
+    }
+    public interface IGeneralKeysActions
+    {
+        void OnRestart(InputAction.CallbackContext context);
     }
 }
