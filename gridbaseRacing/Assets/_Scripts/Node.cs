@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using Sirenix.OdinInspector;
-// using Sirenix.Serialization;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEditor;
 
 [SelectionBase]
@@ -21,11 +21,11 @@ public class Node : MonoBehaviour,INode
     [SerializeField] private GameObject instObj;
     [SerializeField] private NodeInventory nodeInv;
 
-    // [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
+    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
     private int currentNodeIndex;
     
     private int currentRot = 0;
-    // [Button(ButtonSizes.Gigantic)]
+    [Button(ButtonSizes.Gigantic)]
     private void Rotate90Degree()
     {
         currentRot++;
