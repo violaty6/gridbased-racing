@@ -15,6 +15,7 @@ public class CrackedNodeSocket : MonoBehaviour,INode
     public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
         transform.DOShakeRotation(0.5f, 5f).SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+        transform.parent.GetComponent<Node>().currentTag = Node.NodeTag.Void;
     }
 
     public Node PredictInteraction(Node fromNode, Node toNode)

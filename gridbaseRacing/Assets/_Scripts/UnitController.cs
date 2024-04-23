@@ -83,7 +83,6 @@ public class UnitController : MonoBehaviour, IObject
     private void MoveLocal(Vector2 input, bool isPlayerAction)
     {
         if (isMoving && isPlayerAction)return;
-        isMoving = true;
         lastInput = input;
         // if (isTurbo) // TURBO
         // {
@@ -103,6 +102,12 @@ public class UnitController : MonoBehaviour, IObject
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
+        if (targetNode == null)
+        {
+            GameEvents.current.onErrorPerformed(targetCord,0);
+            return;
+        }
+        isMoving = true;
         CheckAndMove(targetNode,isPlayerAction);
     }
     private void CheckTurbo(InputAction.CallbackContext ctx)
@@ -153,6 +158,7 @@ public class UnitController : MonoBehaviour, IObject
         if (targetNodeTag == Node.NodeTag.Void)
         {
             isMoving = false;
+            GameEvents.current.onErrorPerformed(checkNode.cords,0);
         }
         else if (targetNodeTag == Node.NodeTag.Obstacle)
         {

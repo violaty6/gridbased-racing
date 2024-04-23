@@ -15,6 +15,7 @@ public class GameEvents : MonoBehaviour
     public event Action<Transform,int> onSmoke;
     public event Action<Transform,int> onOil;
     public event Action<Transform,int> onCrash;
+    public event Action<Vector3,int> onError;
 
     public  void onMovePerformed(Transform trans,int id)
     {
@@ -43,6 +44,13 @@ public class GameEvents : MonoBehaviour
         if (onCrash != null)
         {
             onCrash(trans,id);
+        }
+    }
+    public void onErrorPerformed(Vector3 trans,int id)
+    {
+        if (onError != null)
+        {
+            onError(trans,id);
         }
     }
 }

@@ -54,7 +54,9 @@ public class AIUnit : MonoBehaviour,IObject
     private void NextNodeFeedback()
     {
         AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
-        if(AIPath.Count >0)        nextNodeFeedbackObj.transform.position = AIPath[0].cords;
+        if(AIPath == null) return;
+        if(AIPath.Count<=0) return;
+        nextNodeFeedbackObj.transform.position = AIPath[0].cords;
     }
 
     private void OnAIMove(int id)
