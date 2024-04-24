@@ -111,8 +111,8 @@ public class GridManager : MonoBehaviour
      private Node PredictCheck(Node fromNode,Node targetNode)
      {
          bool isFinish = false;
-         Node from = fromNode;
          Node target = targetNode;
+         Node from = fromNode;
          Node result = target.PredictInteraction(from,target);
          isFinish = true;
          while (target != result && isFinish)
@@ -150,8 +150,9 @@ public class GridManager : MonoBehaviour
          for (int i = 0; i < 4 ; i++)
          {
              Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
+             if (nextNode == null) continue;
              nextNode = PredictCheck(node, nextNode);
-             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.onNodeObject !=null) continue;
+             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.currentTag == Node.NodeTag.Void || nextNode.onNodeObject !=null) continue;
              neighbours.Add(nextNode);
          }
          return neighbours;

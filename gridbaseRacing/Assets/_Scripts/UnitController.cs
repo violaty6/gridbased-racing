@@ -54,12 +54,26 @@ public class UnitController : MonoBehaviour, IObject
         EngineFeedbackSequence = DOTween.Sequence();
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
         currentNode.onNodeObject = this;
+        GameEvents.current.onCameraSwitch += CheckInputs;
     }
     private void OnEnable()
     {
         _unitControls.Enable();
         _unitControls.BasicMovement.Move.performed += MoveInput;
         _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
+    }
+
+    private void CheckInputs(int id,bool switched)
+    {
+        if (switched)
+        {
+            _unitControls.BasicMovement.Enable();
+        }
+        else
+        {
+            _unitControls.BasicMovement.Disable();
+        }
+
     }
 
     private void OnDisable()

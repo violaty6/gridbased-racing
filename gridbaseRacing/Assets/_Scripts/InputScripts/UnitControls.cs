@@ -182,6 +182,15 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""7b1d4a1e-ecc5-422d-9c05-c67326ff90c8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -195,6 +204,116 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""25ace25d-5981-4cef-9f87-8dfbe721f754"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""7dc54caf-7865-4a63-9487-be61a7969afd"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""b1e18f4e-a3b9-489d-bb5c-b6e927928915"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""23bb5ec9-167b-45c1-b6f2-0a5a466bbb50"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""c8afea07-37ec-4606-9da0-ffab636d2adb"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector Controller"",
+                    ""id"": ""7035cdad-e220-42f2-b757-02ee943a2093"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""07a9d9c4-0ef1-45cb-af16-6b6b32a4f9ef"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""4a4d2eb6-c0ee-4015-ab8f-56944d9f7938"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""0ba7738c-6a46-46e1-a01b-486b8c0a8ce0"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""cffee71d-4490-4500-90bf-bdedc9b9cf4f"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -208,6 +327,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         // GeneralKeys
         m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
         m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
+        m_GeneralKeys_CameraMovement = m_GeneralKeys.FindAction("CameraMovement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -324,11 +444,13 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_GeneralKeys;
     private List<IGeneralKeysActions> m_GeneralKeysActionsCallbackInterfaces = new List<IGeneralKeysActions>();
     private readonly InputAction m_GeneralKeys_Restart;
+    private readonly InputAction m_GeneralKeys_CameraMovement;
     public struct GeneralKeysActions
     {
         private @UnitControls m_Wrapper;
         public GeneralKeysActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Restart => m_Wrapper.m_GeneralKeys_Restart;
+        public InputAction @CameraMovement => m_Wrapper.m_GeneralKeys_CameraMovement;
         public InputActionMap Get() { return m_Wrapper.m_GeneralKeys; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -341,6 +463,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Restart.started += instance.OnRestart;
             @Restart.performed += instance.OnRestart;
             @Restart.canceled += instance.OnRestart;
+            @CameraMovement.started += instance.OnCameraMovement;
+            @CameraMovement.performed += instance.OnCameraMovement;
+            @CameraMovement.canceled += instance.OnCameraMovement;
         }
 
         private void UnregisterCallbacks(IGeneralKeysActions instance)
@@ -348,6 +473,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Restart.started -= instance.OnRestart;
             @Restart.performed -= instance.OnRestart;
             @Restart.canceled -= instance.OnRestart;
+            @CameraMovement.started -= instance.OnCameraMovement;
+            @CameraMovement.performed -= instance.OnCameraMovement;
+            @CameraMovement.canceled -= instance.OnCameraMovement;
         }
 
         public void RemoveCallbacks(IGeneralKeysActions instance)
@@ -373,5 +501,6 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     public interface IGeneralKeysActions
     {
         void OnRestart(InputAction.CallbackContext context);
+        void OnCameraMovement(InputAction.CallbackContext context);
     }
 }

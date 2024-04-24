@@ -16,12 +16,21 @@ public class GameEvents : MonoBehaviour
     public event Action<Transform,int> onOil;
     public event Action<Transform,int> onCrash;
     public event Action<Vector3,int> onError;
+    public event Action<int,bool> onCameraSwitch;
 
     public  void onMovePerformed(Transform trans,int id)
     {
         if (onMove != null)
         {
             onMove(id);
+        }
+    }
+    
+    public  void onCameraSwitchPerformed(int id,bool isUnit)
+    {
+        if (onCameraSwitch != null)
+        {
+            onCameraSwitch(id,isUnit);
         }
     }
 

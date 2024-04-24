@@ -1655,8 +1655,8 @@ MonoBehaviour:
     m_ImpulseType: 3
     m_DissipationRate: 0
     m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-    m_AmplitudeGain: 0.1
-    m_FrequencyGain: 0.1
+    m_AmplitudeGain: 0.12
+    m_FrequencyGain: 0.12
     m_RepeatMode: 0
     m_Randomize: 1
     m_TimeEnvelope:
@@ -1718,7 +1718,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  Velocity: {x: 10, y: 10, z: 0}
+  Velocity: {x: 15, y: 15, z: 0}
   ClearImpulseOnStop: 0
 --- !u!1 &8695921375987950857
 GameObject:
