@@ -126,15 +126,24 @@ public class GridManager : MonoBehaviour
          return result;
      }
 
-     // public List<Node> OneDirectionToLast(Node startNode ,Vector3Int direction)
-     // {
-     //     List<Node> result = new List<Node>{startNode};
-     //     while (GetOneNodeOneDirection(result.Last(),direction) !=null)
-     //     {
-     //         result.Add(GetOneNodeOneDirection(result.Last(),direction));
-     //     }
-     //     return result;
-     // }
+      public List<Node> OneDirectionToLast(Node startNode ,Vector2 direction)
+     {
+          List<Node> resultList = new List<Node>{};
+          Node from = startNode;
+          Node target = GetOneNodeOneDirection(startNode, direction);
+          if (target == null || target.currentTag == Node.NodeTag.Obstacle || target.currentTag == Node.NodeTag.Void || target.onNodeObject !=null) return resultList;
+          Node result =  PredictCheck(from, target);
+          resultList.Add(result);
+          while (target != null || result==target)
+          {
+            from = target;
+            target = GetOneNodeOneDirection(from, direction);
+            if (target == null|| target.currentTag == Node.NodeTag.Obstacle || target.currentTag == Node.NodeTag.Void || target.onNodeObject !=null) break;
+            result = PredictCheck(from, target);
+            resultList.Add(result);
+          }
+          return resultList;
+      }
 
      public Node GetOneNodeOneDirection(Node startNode ,Vector2 moveDirection)
      {

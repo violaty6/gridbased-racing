@@ -21,7 +21,7 @@ public class Node : MonoBehaviour,INode
     [SerializeField] private GameObject instObj;
     [SerializeField] private NodeInventory nodeInv;
 
-    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 5)]
+    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 6)]
     private int currentNodeIndex;
     
     private int currentRot = 0;
@@ -38,7 +38,10 @@ public class Node : MonoBehaviour,INode
         nodeInv.nodeInventory.TryGetValue(currentNodeIndex, out result);
         KillChild();
         currentTag = result.tag;
+        this.name = result.name;
+#if UNITY_EDITOR
         instObj = PrefabUtility.InstantiatePrefab(result.NodeTypeGameObject,transform) as GameObject;
+#endif   
         currentType = instObj.GetComponent<INode>();
     }
     public enum NodeTag
@@ -54,6 +57,12 @@ public class Node : MonoBehaviour,INode
         cords.z = Mathf.RoundToInt(transform.position.z);
         currentTypeCheck();
     }
+
+    private void Start()
+    {
+        Init();
+    }
+
     private void KillChild()
     {
         Transform[] children = new Transform[transform.childCount];

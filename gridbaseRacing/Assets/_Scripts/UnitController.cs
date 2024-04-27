@@ -62,24 +62,27 @@ public class UnitController : MonoBehaviour, IObject
         _unitControls.BasicMovement.Move.performed += MoveInput;
         _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
     }
+    private void OnDisable()
+    {
+        _unitControls.Disable();
+        _unitControls.BasicMovement.Move.performed -= MoveInput;
+        _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
+        DOTween.KillAll();
+    }
 
     private void CheckInputs(int id,bool switched)
     {
         if (switched)
         {
-            _unitControls.BasicMovement.Enable();
+            _unitControls.Enable();
         }
         else
         {
-            _unitControls.BasicMovement.Disable();
+            _unitControls.Disable();
         }
 
     }
 
-    private void OnDisable()
-    {
-        DOTween.KillAll();
-    }
 
     private void OnCrash(Node _crashNode)
     {
@@ -98,12 +101,12 @@ public class UnitController : MonoBehaviour, IObject
     {
         if (isMoving && isPlayerAction)return;
         lastInput = input;
-        // if (isTurbo) // TURBO
-        // {
-        //     Turbo(input);
-        //     isTurbo = false;
-        //     return;
-        // }
+        if (isTurbo) // TURBO
+        {
+            Turbo(input);
+            // isTurbo = false;
+            return;
+        }
         Vector3 moveDirection = Vector3.zero;
         if (input.x != 0 && input.y == 0)
         {
@@ -119,6 +122,7 @@ public class UnitController : MonoBehaviour, IObject
         if (targetNode == null)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
+            Debug.Log(targetNode);
             return;
         }
         isMoving = true;
@@ -132,28 +136,27 @@ public class UnitController : MonoBehaviour, IObject
             canTurbo = false;
         }
     }
-    // private void Turbo(Vector2 input)
-    // {
-    //     isMoving = true;
-    //     Vector3 moveDirection = Vector3.zero;
-    //     if (input.x != 0 && input.y == 0)
-    //     {
-    //         moveDirection.x = input.x ;
-    //     }
-    //     else if (input.y != 0 && input.x == 0)
-    //     {
-    //         moveDirection.z = input.y ;
-    //     }
-    //     Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
-    //     Node targetNode = _gridManager.OneDirectionToLast(currentNode, moveDirectionInt).Last();
-    //     currentNode.UnInteract(this);
-    //     currentNode.onNodeObject = null;
-    //     currentNode = targetNode;
-    //     currentNode.Interact(this);
-    //     currentNodeFeedback.transform.position = currentNode.cords;
-    //     VehicleFeedBack();
-    //     MoveFeedBack(targetNode);
-    // }
+    private void Turbo(Vector2 input)
+    {
+        isMoving = true;
+        Vector3 moveDirection = Vector3.zero;
+        if (input.x != 0 && input.y == 0)
+        {
+            moveDirection.x = input.x ;
+        }
+        else if (input.y != 0 && input.x == 0)
+        {
+            moveDirection.z = input.y ;
+        }
+        List<Node> nodes = _gridManager.OneDirectionToLast(currentNode, input);
+        foreach (var node in nodes)
+        {
+            currentNodeFeedback.transform.position = currentNode.cords;
+            VehicleFeedBack();
+            CheckAndMove(node,false);
+        }
+        GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ---------------
+    }
     private Node.NodeTag CheckNode(Node targetNode)
     {
         if (targetNode == null)
@@ -236,7 +239,7 @@ public class UnitController : MonoBehaviour, IObject
         currentNode.UnInteract(this);
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
-        DOVirtual.DelayedCall(0.3f, () =>
+        DOVirtual.DelayedCall(0.5f, () =>
         {
             FeelCrashFeedback.PlayFeedbacks();
             MoveSequence.Kill();
@@ -276,8 +279,8 @@ public class UnitController : MonoBehaviour, IObject
     }
     public void Move(Node nextNode,bool isPlayerAction)
     {
-        CheckAndMove(nextNode,isPlayerAction); 
-        _unitControls.Disable();
+        CheckAndMove(nextNode,isPlayerAction);
+        isMoving = true;
     }
     public void Crash(Node crashNode)
     {

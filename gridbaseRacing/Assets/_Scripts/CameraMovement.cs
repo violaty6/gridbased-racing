@@ -11,6 +11,8 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float _speed= 1f;
     [SerializeField] private float _smoothing = 5f;
     [SerializeField] private Vector2 _range = new Vector2(100, 100);
+
+    [SerializeField] private Transform Center;
     private UnitControls generalActions;
     public Vector3 _targetPosition;
     private Vector3 _input;
@@ -33,7 +35,7 @@ public class CameraMovement : MonoBehaviour
         else // Free den UNIT
         {
             generalActions.GeneralKeys.CameraMovement.Enable();
-            cinemachineCam.m_Follow = null;
+            cinemachineCam.m_Follow = Center;
         }
     }
     void Update()
@@ -72,5 +74,6 @@ public class CameraMovement : MonoBehaviour
     private void OnDisable()
     {
         generalActions.GeneralKeys.CameraMovement.Disable();
+        GameEvents.current.onCameraSwitch -= SwitchCamera;
     }
 }
