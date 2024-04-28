@@ -1300,7 +1300,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0.00531368, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0020200005, y: 0.00848368, z: 0.0014199995}
+  m_ConnectedAnchor: {x: 0.0020200002, y: 0.00814468, z: 0.0015400004}
   serializedVersion: 2
   m_UseSpring: 1
   m_Spring:
@@ -1312,12 +1312,12 @@ HingeJoint:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_ExtendedLimits: 0
   m_UseAcceleration: 0
   m_Limits:
-    min: 0
-    max: 0
+    min: -20
+    max: 20
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0

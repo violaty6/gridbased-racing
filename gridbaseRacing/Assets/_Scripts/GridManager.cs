@@ -133,6 +133,11 @@ public class GridManager : MonoBehaviour
           Node target = GetOneNodeOneDirection(startNode, direction);
           if (target == null || target.currentTag == Node.NodeTag.Obstacle || target.currentTag == Node.NodeTag.Void || target.onNodeObject !=null) return resultList;
           Node result =  PredictCheck(from, target);
+          if (result != target)
+          {
+              resultList.Add(target);
+              return resultList;
+          }
           resultList.Add(result);
           while (target != null || result==target)
           {
@@ -140,6 +145,11 @@ public class GridManager : MonoBehaviour
             target = GetOneNodeOneDirection(from, direction);
             if (target == null|| target.currentTag == Node.NodeTag.Obstacle || target.currentTag == Node.NodeTag.Void || target.onNodeObject !=null) break;
             result = PredictCheck(from, target);
+            if (result != target)
+            {
+                resultList.Add(target);
+                break;
+            }
             resultList.Add(result);
           }
           return resultList;

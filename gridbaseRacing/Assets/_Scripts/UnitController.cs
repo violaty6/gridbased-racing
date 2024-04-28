@@ -104,7 +104,7 @@ public class UnitController : MonoBehaviour, IObject
         if (isTurbo) // TURBO
         {
             Turbo(input);
-            // isTurbo = false;
+            isTurbo = false;
             return;
         }
         Vector3 moveDirection = Vector3.zero;
@@ -122,7 +122,6 @@ public class UnitController : MonoBehaviour, IObject
         if (targetNode == null)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
-            Debug.Log(targetNode);
             return;
         }
         isMoving = true;
@@ -139,6 +138,7 @@ public class UnitController : MonoBehaviour, IObject
     private void Turbo(Vector2 input)
     {
         isMoving = true;
+
         Vector3 moveDirection = Vector3.zero;
         if (input.x != 0 && input.y == 0)
         {
@@ -153,9 +153,9 @@ public class UnitController : MonoBehaviour, IObject
         {
             currentNodeFeedback.transform.position = currentNode.cords;
             VehicleFeedBack();
-            CheckAndMove(node,false);
+            CheckAndMove(node,true);
         }
-        GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ---------------
+
     }
     private Node.NodeTag CheckNode(Node targetNode)
     {
@@ -239,7 +239,7 @@ public class UnitController : MonoBehaviour, IObject
         currentNode.UnInteract(this);
         transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
         transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
-        DOVirtual.DelayedCall(0.5f, () =>
+        DOVirtual.DelayedCall(0.33f, () =>
         {
             FeelCrashFeedback.PlayFeedbacks();
             MoveSequence.Kill();
