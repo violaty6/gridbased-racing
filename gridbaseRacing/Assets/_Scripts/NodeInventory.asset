@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NodeInventory
   m_EditorClassIdentifier: 
   nodeInventory:
-    m_Keys: 00000000010000000200000003000000040000000500000006000000
+    m_Keys: 0000000001000000020000000300000004000000050000000600000007000000
     m_Values:
     - {fileID: 11400000, guid: a6b8251cc1d7eee43ad4011c5d417ffc, type: 2}
     - {fileID: 11400000, guid: dd4b54bb554b1914b92f91a5938e95c2, type: 2}
@@ -22,3 +22,4 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4908119dc55f4b241902186f64877ea8, type: 2}
     - {fileID: 11400000, guid: 0a68e705ab4cdb646bdd2a388f881b57, type: 2}
     - {fileID: 11400000, guid: aa88c12b011a3db4bafce453ad292234, type: 2}
+    - {fileID: 11400000, guid: 93ffd21db0066354a9ac6a8cfbad1976, type: 2}

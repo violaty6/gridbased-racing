@@ -146,8 +146,8 @@ Material:
     - _GradientEnabled: 0
     - _GradientSize: 10
     - _LightContribution: 1
-    - _LightmapDirectionPitch: 42
-    - _LightmapDirectionYaw: 0
+    - _LightmapDirectionPitch: 314
+    - _LightmapDirectionYaw: 70
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OutlineDepthOffset: 1
@@ -184,7 +184,7 @@ Material:
     - _FlatRimColor: {r: 0.01886791, g: 0.01886791, b: 0.01886791, a: 0.85056}
     - _FlatSpecularColor: {r: 0.01886791, g: 0.01886791, b: 0.01886791, a: 0.4117647}
     - _LightAttenuation: {r: 0, g: 1, b: 0, a: 0}
-    - _LightmapDirection: {r: 0, g: 0.7431448, b: 0.6691306, a: 0}
+    - _LightmapDirection: {r: -0.67595834, g: 0.69465834, b: -0.24602872, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

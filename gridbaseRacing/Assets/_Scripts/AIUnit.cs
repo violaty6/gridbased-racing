@@ -63,6 +63,7 @@ public class AIUnit : MonoBehaviour,IObject
     {
         if (isCrashed) return;
         AIPath =  _gridManager.PathNodes(currentNode,endPoint,_UnitEnginePower);
+        NextNodeFeedback();
         if(AIPath == null) return;
         if(AIPath.Count<=0) return;
         Move(AIPath[0],false);
@@ -192,6 +193,8 @@ public class AIUnit : MonoBehaviour,IObject
     private void OnCrash(Node _crashNode)
     {
         isCrashed = true;
+        currentNode.onNodeObject = null;
+        nextNodeFeedbackObj.transform.DOScale(0f, 0.1f);
         CrashFeedback(_crashNode);
     }
 

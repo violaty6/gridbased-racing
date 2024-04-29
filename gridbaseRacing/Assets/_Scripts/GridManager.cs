@@ -75,7 +75,7 @@ public class GridManager : MonoBehaviour
                  path =  RetracePath(startNode,targetNode);
                  return path;
              }
-             foreach (var neighbour in GetNeighbours(current , power))
+             foreach (var neighbour in GetNeighbours(current , openNodes.Count))
              {
                  if (neighbour == null || closedNodes.Contains(neighbour))
                  {
@@ -163,15 +163,16 @@ public class GridManager : MonoBehaviour
          return nextNode;
      }
      
-     private List<Node> GetNeighbours(Node node , int power)
+     private List<Node> GetNeighbours(Node node , int index)
      {
+         Debug.Log(index);
          List<Node> neighbours = new List<Node>();
          for (int i = 0; i < 4 ; i++)
          {
-             Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i] * power));
+             Node nextNode = GetTileAt(node.cords +( Direction.directionsOffset[i]));
              if (nextNode == null) continue;
              nextNode = PredictCheck(node, nextNode);
-             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.currentTag == Node.NodeTag.Void || nextNode.onNodeObject !=null) continue;
+             if (nextNode == null || nextNode.currentTag == Node.NodeTag.Obstacle || nextNode.currentTag == Node.NodeTag.Void || (nextNode.onNodeObject !=null && index !=1 )) continue;
              neighbours.Add(nextNode);
          }
          return neighbours;

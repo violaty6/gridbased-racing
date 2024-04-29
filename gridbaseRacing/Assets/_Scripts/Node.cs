@@ -21,7 +21,7 @@ public class Node : MonoBehaviour,INode
     [SerializeField] private GameObject instObj;
     [SerializeField] private NodeInventory nodeInv;
 
-    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 6)]
+    [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 7)]
     private int currentNodeIndex;
     
     private int currentRot = 0;

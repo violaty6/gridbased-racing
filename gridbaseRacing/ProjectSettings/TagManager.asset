@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: SceneTrans
+    uniqueID: 1129494911
+    locked: 0

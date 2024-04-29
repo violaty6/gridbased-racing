@@ -51,7 +51,7 @@ Material:
     m_Colors:
     - _BackColor: {r: 0.13207549, g: 0.1302065, b: 0.1302065, a: 0}
     - _MaskColor: {r: 0, g: 0, b: 0, a: 0}
-    - _StripesColor: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0}
+    - _StripesColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3084398800835129617
 MonoBehaviour:
