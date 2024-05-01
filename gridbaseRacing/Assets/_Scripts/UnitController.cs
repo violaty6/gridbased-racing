@@ -93,6 +93,7 @@ public class UnitController : MonoBehaviour, IObject
 
     private void OnCrash(Node _crashNode)
     {
+        isCrashed = true;
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= MoveInput;
         CrashFeedback(_crashNode);
@@ -123,6 +124,7 @@ public class UnitController : MonoBehaviour, IObject
 
     private void MoveLocal(Vector2 input, bool isPlayerAction)
     {
+        if(isCrashed)return;
         lastInput = input;
         Vector3 moveDirection = Vector3.zero;
         moveDirection.x = input.x;
@@ -160,7 +162,6 @@ public class UnitController : MonoBehaviour, IObject
         }
         else if (targetNodeTag == Node.NodeTag.Obstacle)
         {
-            isCrashed = true;
             OnCrash(checkNode);
             currentNodeFeedback.transform.position = checkNode.cords;
         }
@@ -231,9 +232,11 @@ public class UnitController : MonoBehaviour, IObject
     {
         VehicleFeedBack();
         currentNode.UnInteract(this);
-        transform.DOMove(node.cords, 1f).SetEase(Ease.OutQuart);
-        transform.DOLookAt(node.cords, 0.1f).SetEase(Ease.OutQuart);
-        DOVirtual.DelayedCall(0.33f, () =>
+        movePath.Clear();
+        movePath.Add((currentNode.cords.ConvertTo<Vector3>()+(currentNode.cords+node.cords).ConvertTo<Vector3>()/2)/2);
+        movePath.Add(node.cords);
+        transform.DOPath(movePath.ToArray(), 1.25f, PathType.CatmullRom).SetLookAt(1.25f,Vector3.forward*isReverse).SetEase(Ease.OutQuart);
+        DOVirtual.DelayedCall(0.5f, () =>
         {
             FeelCrashFeedback.PlayFeedbacks();
             MoveSequence.Kill();
