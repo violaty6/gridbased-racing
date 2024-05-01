@@ -27,8 +27,7 @@ public class UnitController : MonoBehaviour, IObject
     [SerializeField] private bool isCrashed = false;
     [SerializeField] private bool isMoving = false;
     
-    [SerializeField] private bool canTurbo = true;
-    [SerializeField] private bool isTurbo = false;
+    [SerializeField] private int isReverse = 1;
     
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private GameObject currentNodeFeedback;
@@ -40,6 +39,11 @@ public class UnitController : MonoBehaviour, IObject
     private Sequence EngineFeedbackSequence;
     [SerializeField] private MMFeedbacks FeelCrashFeedback;
     public Vector2 lastInput { get; set; }
+    public Vector2Int forwardDirection;
+    public Vector2Int rightDirection;
+
+    private List<Vector3> movePath;
+
     public Node currentNode { get; set; }
     public Node previusNode;
     private void Awake()
@@ -55,18 +59,21 @@ public class UnitController : MonoBehaviour, IObject
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
         currentNode.onNodeObject = this;
         GameEvents.current.onCameraSwitch += CheckInputs;
+        forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z));
+        rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
+        movePath = new List<Vector3>();
     }
     private void OnEnable()
     {
         _unitControls.Enable();
         _unitControls.BasicMovement.Move.performed += MoveInput;
-        _unitControls.BasicMovement.Turbo.performed += CheckTurbo;
+        _unitControls.BasicMovement.Reverse.performed += reverseGear;
     }
     private void OnDisable()
     {
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= MoveInput;
-        _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
+        _unitControls.BasicMovement.Reverse.performed -= reverseGear;
         DOTween.KillAll();
     }
 
@@ -88,34 +95,38 @@ public class UnitController : MonoBehaviour, IObject
     {
         _unitControls.Disable();
         _unitControls.BasicMovement.Move.performed -= MoveInput;
-        _unitControls.BasicMovement.Turbo.performed -= CheckTurbo;
         CrashFeedback(_crashNode);
     }
     private void MoveInput(InputAction.CallbackContext ctx)
     {
-        Vector2 input = ctx.ReadValue<Vector2>();
-        MoveLocal(input,true);
+        Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
+        Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
+        if (input == new Vector2Int(0,1)) 
+        {
+            MoveLocal(forwardDirection,true);
+        }
+        else if (input == new Vector2Int(-1, 0) || input == new Vector2Int(1, 0))
+        {
+            MoveLocal(forwardDirection,true);
+            MoveLocal(rightDirection*input.x,true);
+            forwardDirection = (rightDirection * input.x);
+            rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x);
+        }
+    }
+
+    private void reverseGear(InputAction.CallbackContext ctx)
+    {
+        isReverse = isReverse*-1;
+        forwardDirection = -forwardDirection;
+        rightDirection = -rightDirection;
     }
 
     private void MoveLocal(Vector2 input, bool isPlayerAction)
     {
-        if (isMoving && isPlayerAction)return;
         lastInput = input;
-        if (isTurbo) // TURBO
-        {
-            Turbo(input);
-            isTurbo = false;
-            return;
-        }
         Vector3 moveDirection = Vector3.zero;
-        if (input.x != 0 && input.y == 0)
-        {
-            moveDirection.x = input.x;
-        }
-        else if (input.y != 0 && input.x == 0)
-        {
-            moveDirection.z = input.y;
-        }
+        moveDirection.x = input.x;
+        moveDirection.z = input.y;
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
@@ -126,36 +137,6 @@ public class UnitController : MonoBehaviour, IObject
         }
         isMoving = true;
         CheckAndMove(targetNode,isPlayerAction);
-    }
-    private void CheckTurbo(InputAction.CallbackContext ctx)
-    {
-        if (canTurbo)
-        {
-            isTurbo = true;
-            canTurbo = false;
-        }
-    }
-    private void Turbo(Vector2 input)
-    {
-        isMoving = true;
-
-        Vector3 moveDirection = Vector3.zero;
-        if (input.x != 0 && input.y == 0)
-        {
-            moveDirection.x = input.x ;
-        }
-        else if (input.y != 0 && input.x == 0)
-        {
-            moveDirection.z = input.y ;
-        }
-        List<Node> nodes = _gridManager.OneDirectionToLast(currentNode, input);
-        foreach (var node in nodes)
-        {
-            currentNodeFeedback.transform.position = currentNode.cords;
-            VehicleFeedBack();
-            CheckAndMove(node,true);
-        }
-
     }
     private Node.NodeTag CheckNode(Node targetNode)
     {
@@ -185,7 +166,6 @@ public class UnitController : MonoBehaviour, IObject
         }
         else
         {
-            VehicleFeedBack();
             if(isPlayerAction)GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
             GameEvents.current.onSmokePerformed(SmokeEffectSlot,0); // SMOKE event ----------------------------------
             MoveFeedBack(checkNode,isPlayerAction);
@@ -203,11 +183,26 @@ public class UnitController : MonoBehaviour, IObject
     {
         _top.transform.DOLocalMoveY(_top.transform.localPosition.y + 0.01f, 0.12f).SetLoops(-1,LoopType.Yoyo);
     }
+    
+    //  SetEase(Ease.OutQuart)
     void MoveFeedBack(Node targetNode,bool isPlayerAction)
     {
-        DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        transform.DOMove(targetNode.cords, 1f).SetEase(Ease.OutQuart).OnComplete((() => {if(!isPlayerAction)_unitControls.Enable();}));
-        transform.DOLookAt(targetNode.cords, 0.1f).SetEase(Ease.OutQuart);
+        movePath.Clear();
+        movePath.Add((currentNode.cords.ConvertTo<Vector3>()+(currentNode.cords+targetNode.cords).ConvertTo<Vector3>()/2)/2);
+        movePath.Add(targetNode.cords);
+        transform.DOPath(movePath.ToArray(), 1.25f, PathType.CatmullRom).SetLookAt(1.25f,Vector3.forward*isReverse).SetEase(Ease.OutQuart);
+        
+        
+        // DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
+        // MoveSequence.Insert(5f,transform.DOMove(targetNode.cords, 1f).OnComplete((() => {if(!isPlayerAction)_unitControls.Enable();})));
+        // transform.DOLookAt(targetNode.cords, 0f);
+        
+        //TİRES
+        _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
+        foreach (var wheel in _wheels)
+        {
+            wheel.transform.DOLocalRotate(new Vector3(-360*isReverse,0,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+        }
         
         // Başka object varsa gideceği yerde
         if (targetNode.onNodeObject == null)
@@ -220,12 +215,11 @@ public class UnitController : MonoBehaviour, IObject
             targetNode.onNodeObject.Crash(targetNode);
             OnCrash(targetNode);
         }
+        
     }
 
     void VehicleFeedBack()
     {
-        MoveSequence.Kill();
-        MoveSequence = DOTween.Sequence();
         _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
         {

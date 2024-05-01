@@ -37,7 +37,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Turbo"",
+                    ""name"": ""Reverse"",
                     ""type"": ""Button"",
                     ""id"": ""a67c0626-7d71-4fab-a780-b081d86d44bb"",
                     ""expectedControlType"": ""Button"",
@@ -160,11 +160,11 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""18ac3457-d6e6-4447-8384-849b03df51d6"",
-                    ""path"": ""<Keyboard>/t"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Turbo"",
+                    ""action"": ""Reverse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -323,7 +323,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         // BasicMovement
         m_BasicMovement = asset.FindActionMap("BasicMovement", throwIfNotFound: true);
         m_BasicMovement_Move = m_BasicMovement.FindAction("Move", throwIfNotFound: true);
-        m_BasicMovement_Turbo = m_BasicMovement.FindAction("Turbo", throwIfNotFound: true);
+        m_BasicMovement_Reverse = m_BasicMovement.FindAction("Reverse", throwIfNotFound: true);
         // GeneralKeys
         m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
         m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
@@ -390,13 +390,13 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_BasicMovement;
     private List<IBasicMovementActions> m_BasicMovementActionsCallbackInterfaces = new List<IBasicMovementActions>();
     private readonly InputAction m_BasicMovement_Move;
-    private readonly InputAction m_BasicMovement_Turbo;
+    private readonly InputAction m_BasicMovement_Reverse;
     public struct BasicMovementActions
     {
         private @UnitControls m_Wrapper;
         public BasicMovementActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_BasicMovement_Move;
-        public InputAction @Turbo => m_Wrapper.m_BasicMovement_Turbo;
+        public InputAction @Reverse => m_Wrapper.m_BasicMovement_Reverse;
         public InputActionMap Get() { return m_Wrapper.m_BasicMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -409,9 +409,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Turbo.started += instance.OnTurbo;
-            @Turbo.performed += instance.OnTurbo;
-            @Turbo.canceled += instance.OnTurbo;
+            @Reverse.started += instance.OnReverse;
+            @Reverse.performed += instance.OnReverse;
+            @Reverse.canceled += instance.OnReverse;
         }
 
         private void UnregisterCallbacks(IBasicMovementActions instance)
@@ -419,9 +419,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Turbo.started -= instance.OnTurbo;
-            @Turbo.performed -= instance.OnTurbo;
-            @Turbo.canceled -= instance.OnTurbo;
+            @Reverse.started -= instance.OnReverse;
+            @Reverse.performed -= instance.OnReverse;
+            @Reverse.canceled -= instance.OnReverse;
         }
 
         public void RemoveCallbacks(IBasicMovementActions instance)
@@ -496,7 +496,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     public interface IBasicMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnTurbo(InputAction.CallbackContext context);
+        void OnReverse(InputAction.CallbackContext context);
     }
     public interface IGeneralKeysActions
     {

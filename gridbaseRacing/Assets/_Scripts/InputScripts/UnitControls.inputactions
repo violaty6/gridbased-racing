@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Turbo",
+                    "name": "Reverse",
                     "type": "Button",
                     "id": "a67c0626-7d71-4fab-a780-b081d86d44bb",
                     "expectedControlType": "Button",
@@ -138,11 +138,11 @@
                 {
                     "name": "",
                     "id": "18ac3457-d6e6-4447-8384-849b03df51d6",
-                    "path": "<Keyboard>/t",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Turbo",
+                    "action": "Reverse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
