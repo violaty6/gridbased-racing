@@ -10,7 +10,11 @@ public class FinishNodeSocket : MonoBehaviour,INode
 
     public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
-        Debug.Log(interactOwner + "win");
+        Vector2 direction = GridManager.Instance.GetDirectionNodeToNode(fromNode, toNode);
+        if (direction == interactOwner.forward)
+        {
+            Debug.Log(interactOwner + "win");
+        }
     }
     public Node PredictInteraction(Node fromNode, Node toNode)
     {

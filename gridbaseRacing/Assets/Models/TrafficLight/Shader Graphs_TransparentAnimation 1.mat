@@ -55,7 +55,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaMultiplie: 0.43
+    - _AlphaMultiplie: 0.25
     - _QueueControl: 0
     - _QueueOffset: 0
     - _TileMultiplier: 1

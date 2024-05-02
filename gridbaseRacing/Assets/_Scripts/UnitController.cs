@@ -12,7 +12,7 @@ using Sequence = DG.Tweening.Sequence;
 public interface IObject
 {
     public Node currentNode { get; set; }
-    public Vector2 lastInput { get; set; }
+    public Vector2 forward { get;}
     public void Move(Node nextNode,bool isPlayerAction);
     public void Crash(Node crashNode);
 }
@@ -38,7 +38,12 @@ public class UnitController : MonoBehaviour, IObject
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
     [SerializeField] private MMFeedbacks FeelCrashFeedback;
-    public Vector2 lastInput { get; set; }
+
+    public Vector2 forward
+    {
+        get { return forwardDirection; }
+    }
+
     public Vector2Int forwardDirection;
     public Vector2Int rightDirection;
 
@@ -125,7 +130,6 @@ public class UnitController : MonoBehaviour, IObject
     private void MoveLocal(Vector2 input, bool isPlayerAction)
     {
         if(isCrashed)return;
-        lastInput = input;
         Vector3 moveDirection = Vector3.zero;
         moveDirection.x = input.x;
         moveDirection.z = input.y;

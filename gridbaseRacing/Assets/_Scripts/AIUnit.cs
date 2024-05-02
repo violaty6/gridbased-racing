@@ -25,6 +25,8 @@ public class AIUnit : MonoBehaviour,IObject
     [SerializeField] private Transform SmokeEffectSlot;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
+    public Vector2 forward { get; }
+
     public void Move(Node nextNode, bool isPlayerAction)
     {
         CheckAndMove(nextNode);
