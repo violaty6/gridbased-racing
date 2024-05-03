@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class FinishNodeSocket : MonoBehaviour,INode
 {
+    
     public void Init()
     {
     }
 
     public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
-        Vector2 direction = GridManager.Instance.GetDirectionNodeToNode(fromNode, toNode);
+        Debug.Log(interactOwner.forward);
+        Vector2 direction = new Vector2(-transform.right.x,-transform.right.z);
+        Debug.Log(direction);
         if (direction == interactOwner.forward)
         {
             Debug.Log(interactOwner + "win");
