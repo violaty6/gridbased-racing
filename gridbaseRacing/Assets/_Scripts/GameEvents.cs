@@ -17,6 +17,7 @@ public class GameEvents : MonoBehaviour
     public event Action<Transform,int> onCrash;
     public event Action<Vector3,int> onError;
     public event Action<int,bool> onCameraSwitch;
+    public event Action<int,int> onReverseSwitch;
 
     public  void onMovePerformed(Transform trans,int id)
     {
@@ -33,6 +34,14 @@ public class GameEvents : MonoBehaviour
             onCameraSwitch(id,isUnit);
         }
     }
+    public  void onReverseSwitchPerformed(int id,int isUp)
+    {
+        if (onReverseSwitch != null)
+        {
+            onReverseSwitch(id,isUp);
+        }
+    }
+
 
     public void onSmokePerformed(Transform trans, int id)
     {

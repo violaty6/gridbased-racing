@@ -101,10 +101,10 @@ Material:
     - _MinimumNumberStacks: 2
     - _Mode: 0
     - _NearCameraSmoosh: 0.5
-    - _NoisePower: 0.1
+    - _NoisePower: 0
     - _NumberOfStacks: 17
     - _OcclusionStrength: 1
-    - _OffsetValue: 0.69
+    - _OffsetValue: 0.47
     - _Parallax: 0.02
     - _ProceduralDistance: 5.5
     - _ProceduralStrength: 8.16
@@ -135,7 +135,7 @@ Material:
     - _UseWC: 0
     - _WindForce: 0.4
     - _WindMovement: 1.04
-    - _WorldRotation: 0
+    - _WorldRotation: 162
     - _WorldScale: 1
     - _ZWrite: 1
     - __NumberOfStacks: 1

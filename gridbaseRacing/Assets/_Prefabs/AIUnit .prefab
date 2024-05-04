@@ -699,7 +699,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4415138422771646902}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f5c3e3592a10d2418e2bcfec4299b29, type: 3}
   m_Name: 
@@ -1423,23 +1423,28 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 103.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.021962851
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.087
+      value: -0.15
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.385
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
@@ -1454,12 +1459,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60aac8ebb7f2454478593e4778fbc994,
         type: 3}
@@ -1543,7 +1548,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0.00531368, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0023348136, y: 0.003637376, z: 0.0040800003}
+  m_ConnectedAnchor: {x: 0.0023349342, y: 0.0037538197, z: 0.0034499997}
   serializedVersion: 2
   m_UseSpring: 1
   m_Spring:

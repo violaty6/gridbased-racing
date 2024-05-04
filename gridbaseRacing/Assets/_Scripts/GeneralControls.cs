@@ -17,15 +17,22 @@ public class GeneralControls : MonoBehaviour
     {
         _unitControls.Enable();
         _unitControls.GeneralKeys.Restart.performed += Restart;
+        _unitControls.GeneralKeys.Next.performed += NextLevel;
     }
     private void OnDisable()
     {
         _unitControls.Disable();
         _unitControls.GeneralKeys.Restart.performed -= Restart;
+        _unitControls.GeneralKeys.Next.performed -= NextLevel;
     }
 
     private void Restart( InputAction.CallbackContext ctx)
     {
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void NextLevel(InputAction.CallbackContext ctx)
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex +1);
     }
 }

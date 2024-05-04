@@ -191,6 +191,15 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Next"",
+                    ""type"": ""Button"",
+                    ""id"": ""94372c20-8f4e-41cb-86a1-8f989d4f73ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -314,6 +323,17 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""action"": ""CameraMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f3ec6dd-f588-456a-acf7-acbb0baf1c5c"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Next"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -328,6 +348,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
         m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
         m_GeneralKeys_CameraMovement = m_GeneralKeys.FindAction("CameraMovement", throwIfNotFound: true);
+        m_GeneralKeys_Next = m_GeneralKeys.FindAction("Next", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -445,12 +466,14 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     private List<IGeneralKeysActions> m_GeneralKeysActionsCallbackInterfaces = new List<IGeneralKeysActions>();
     private readonly InputAction m_GeneralKeys_Restart;
     private readonly InputAction m_GeneralKeys_CameraMovement;
+    private readonly InputAction m_GeneralKeys_Next;
     public struct GeneralKeysActions
     {
         private @UnitControls m_Wrapper;
         public GeneralKeysActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Restart => m_Wrapper.m_GeneralKeys_Restart;
         public InputAction @CameraMovement => m_Wrapper.m_GeneralKeys_CameraMovement;
+        public InputAction @Next => m_Wrapper.m_GeneralKeys_Next;
         public InputActionMap Get() { return m_Wrapper.m_GeneralKeys; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -466,6 +489,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @CameraMovement.started += instance.OnCameraMovement;
             @CameraMovement.performed += instance.OnCameraMovement;
             @CameraMovement.canceled += instance.OnCameraMovement;
+            @Next.started += instance.OnNext;
+            @Next.performed += instance.OnNext;
+            @Next.canceled += instance.OnNext;
         }
 
         private void UnregisterCallbacks(IGeneralKeysActions instance)
@@ -476,6 +502,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @CameraMovement.started -= instance.OnCameraMovement;
             @CameraMovement.performed -= instance.OnCameraMovement;
             @CameraMovement.canceled -= instance.OnCameraMovement;
+            @Next.started -= instance.OnNext;
+            @Next.performed -= instance.OnNext;
+            @Next.canceled -= instance.OnNext;
         }
 
         public void RemoveCallbacks(IGeneralKeysActions instance)
@@ -502,5 +531,6 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     {
         void OnRestart(InputAction.CallbackContext context);
         void OnCameraMovement(InputAction.CallbackContext context);
+        void OnNext(InputAction.CallbackContext context);
     }
 }

@@ -43,7 +43,6 @@ public class UnitController : MonoBehaviour, IObject
     {
         get { return forwardDirection*-isReverse; }
     }
-
     public Vector2Int forwardDirection;
     public Vector2Int rightDirection;
     public Vector2Int lastInput;
@@ -65,7 +64,7 @@ public class UnitController : MonoBehaviour, IObject
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
         currentNode.onNodeObject = this;
         GameEvents.current.onCameraSwitch += CheckInputs;
-        forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z));
+        forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z)) ;
         rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
         movePath = new List<Vector3>();
     }
@@ -109,10 +108,17 @@ public class UnitController : MonoBehaviour, IObject
         Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
         Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
         lastInput = input;
-        if (input == new Vector2Int(0,1)) 
+        if (input == new Vector2Int(0,1))
         {
             MoveLocal(forwardDirection,true,false);
+            GameEvents.current.onReverseSwitchPerformed(0,isReverse);
         }
+        // if (input == new Vector2Int(0,-1))
+        // {
+        //     isReverse = -1;
+        //     MoveLocal(forwardDirection,true,false);
+        //     GameEvents.current.onReverseSwitchPerformed(0,isReverse);
+        // }
         else if (input == new Vector2Int(-1, 0) || input == new Vector2Int(1, 0))
         {
             MoveLocalTurn(forwardDirection,rightDirection*input.x,true,true);
@@ -123,7 +129,8 @@ public class UnitController : MonoBehaviour, IObject
     {
         isReverse = isReverse*-1;
         forwardDirection = -forwardDirection;
-        rightDirection = -rightDirection;
+        GameEvents.current.onReverseSwitchPerformed(0,isReverse);
+        // rightDirection = -rightDirection;
     }
     private void MoveLocal(Vector2 input, bool isPlayerAction,bool isTurn)
     {
@@ -149,15 +156,18 @@ public class UnitController : MonoBehaviour, IObject
         moveDirection.z = input1.y;
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int moveDirectionInt2 = new Vector3Int(Mathf.RoundToInt(input2.x), 0, Mathf.RoundToInt(input2.y));
+
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
-        Vector3Int targetCord2 = targetCord + moveDirectionInt2;
         Node targetNode = _gridManager.GetTileAt(targetCord);
-        Node targetNode2 = _gridManager.GetTileAt(targetCord2);
         if (targetNode == null)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
             return;
         }
+        Vector3Int targetCord2 = targetNode.cords + moveDirectionInt2;
+        Node targetNode2 = _gridManager.GetTileAt(targetCord2);
+
+
         if (targetNode2 == null)
         {
             GameEvents.current.onErrorPerformed(targetCord2,0);
@@ -165,6 +175,13 @@ public class UnitController : MonoBehaviour, IObject
         }
         isMoving = true;
         CheckAndMove(targetNode,isPlayerAction,false);
+        targetCord2 = currentNode.cords + moveDirectionInt2;
+        targetNode2 = _gridManager.GetTileAt(targetCord2);
+        if (targetNode2 == null)
+        {
+            GameEvents.current.onErrorPerformed(targetCord2,0);
+            return;
+        }
         CheckAndMove(targetNode2,isPlayerAction,isTurn);
     }
     private Node.NodeTag CheckNode(Node targetNode)
@@ -202,14 +219,14 @@ public class UnitController : MonoBehaviour, IObject
             //------------
             if (isTurn)
             {
+                Debug.Log("dam");
                 forwardDirection = (rightDirection * lastInput.x);
-                rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x);
+                rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x)*isReverse;
             }
             currentNode.UnInteract(this);
             previusNode = currentNode;
             currentNode.onNodeObject = null;
             //------------
-            Debug.Log("bob");
             currentNode = checkNode;
             currentNode.Interact(previusNode,currentNode,this);
             currentNodeFeedback.transform.position = currentNode.cords;
@@ -311,6 +328,8 @@ public class UnitController : MonoBehaviour, IObject
     }
     public void Move(Node nextNode,bool isPlayerAction)
     {
+        Debug.Log("bum");
+
         CheckAndMove(nextNode,isPlayerAction,false);
         isMoving = true;
     }
