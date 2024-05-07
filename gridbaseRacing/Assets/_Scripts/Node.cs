@@ -21,6 +21,8 @@ public class Node : MonoBehaviour,INode
     [SerializeField] private GameObject instObj;
     [SerializeField] private NodeInventory nodeInv;
 
+
+
     [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 7)]
     private int currentNodeIndex;
     
@@ -36,7 +38,7 @@ public class Node : MonoBehaviour,INode
     {
         NodeType result = null;
         nodeInv.nodeInventory.TryGetValue(currentNodeIndex, out result);
-        KillChild();
+        KillChild(transform.gameObject);
         currentTag = result.tag;
         this.name = result.name;
 #if UNITY_EDITOR
@@ -49,6 +51,7 @@ public class Node : MonoBehaviour,INode
         Default,
         Obstacle,
         Void,
+        Limited,
     }
     private void Awake()
     {
@@ -63,12 +66,12 @@ public class Node : MonoBehaviour,INode
         Init();
     }
 
-    private void KillChild()
+    private void KillChild(GameObject socket)
     {
-        Transform[] children = new Transform[transform.childCount];
-        for (int i = 0; i < transform.childCount; i++)
+        Transform[] children = new Transform[socket.transform.childCount];
+        for (int i = 0; i < socket.transform.childCount; i++)
         {
-            children[i] = transform.GetChild(i);
+            children[i] = socket.transform.GetChild(i);
         }
         foreach (Transform child in children)
         {
@@ -98,5 +101,44 @@ public class Node : MonoBehaviour,INode
     public void UnInteract(IObject interactOwner)
     {
         currentType.UnInteract(interactOwner);
+    }
+    
+    
+    
+     // LIMIT ****************************
+     bool isLimited
+     {
+         get
+         {
+             if (currentTag == NodeTag.Limited) return true;
+             else return false;
+         }
+     }
+
+     [ShowIf("isLimited")][SerializeField] public Vector2 limitedDir;
+     [ShowIf("isLimited")][SerializeField] private GameObject LimiterSocket;
+     [ShowIf("isLimited")][SerializeField] private GameObject LimiterPrefab;
+     
+    [ShowIf("isLimited")]
+    [Button(ButtonSizes.Small)]
+    private void Clear()
+    {
+        limitedDir = new Vector2(0, 0);
+    }
+    [ShowIf("isLimited")]
+    [Button(ButtonSizes.Small)]
+    private void LimitDirection()
+    {
+#if UNITY_EDITOR
+        LimiterSocket.transform.LookAt(new Vector3(-limitedDir.x*90,0,-limitedDir.y*90));
+#endif
+    }
+    [ShowIf("isLimited")]
+    [Button(ButtonSizes.Small)]
+    private void AddLimiter()
+    {
+#if UNITY_EDITOR
+        LimiterSocket = PrefabUtility.InstantiatePrefab(LimiterPrefab,transform) as GameObject;
+#endif
     }
 }

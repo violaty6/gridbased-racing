@@ -76,6 +76,11 @@ MonoBehaviour:
   currentTag: 0
   instObj: {fileID: 0}
   nodeInv: {fileID: 11400000, guid: 1d1fa500a81aa8c48979903257253f69, type: 2}
+  currentNodeIndex: 0
+  limitedDir: {x: 0, y: 0}
+  LimiterSocket: {fileID: 0}
+  LimiterPrefab: {fileID: 1800028474572877299, guid: 21da51f7dd3469449a9568404f400f30,
+    type: 3}
 --- !u!23 &5597223416998064763
 MeshRenderer:
   m_ObjectHideFlags: 0

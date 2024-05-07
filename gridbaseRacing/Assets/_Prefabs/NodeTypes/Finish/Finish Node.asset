@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 191ab612804888640adee98d486aaa34, type: 3}
   m_Name: Finish Node
   m_EditorClassIdentifier: 
-  tag: 0
+  tag: 3
   typeName: Finish
   NodeTypeGameObject: {fileID: 3547290095449179392, guid: 6348b2da5a6889244980e8066cefde3e,
     type: 3}

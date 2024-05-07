@@ -35,6 +35,7 @@ public class UnitController : MonoBehaviour, IObject
     [SerializeField] private int _UnitEnginePower;
     [SerializeField] private Transform SmokeEffectSlot;
     [SerializeField] private float ExplosionForce = 2000f;
+    [SerializeField] private float gasRepeatTime = 0.35f;
     private UnitControls _unitControls;
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
@@ -132,7 +133,7 @@ public class UnitController : MonoBehaviour, IObject
     {
         while (isHolding)
         {
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(gasRepeatTime);
             if(isHolding) Gas(input);
         }
     }
@@ -264,9 +265,10 @@ public class UnitController : MonoBehaviour, IObject
     private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
     {
         if (isCrashed)return;
-        
+        Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, checkNode);
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
 
+        
         if (targetNodeTag == Node.NodeTag.Void)
         {
             isMoving = false;
@@ -276,6 +278,17 @@ public class UnitController : MonoBehaviour, IObject
         {
             OnCrash(checkNode);
             currentNodeFeedback.transform.position = checkNode.cords;
+        }
+        else if (targetNodeTag == Node.NodeTag.Limited && toDirection == checkNode.limitedDir || currentNode.limitedDir == -toDirection)
+        {
+            if (currentNode.limitedDir == -toDirection)
+            {
+                isMoving = false;
+                GameEvents.current.onErrorPerformed(currentNode.cords,0);
+                return;
+            }
+            isMoving = false;
+            GameEvents.current.onErrorPerformed(checkNode.cords,0);
         }
         else
         {
