@@ -241,6 +241,7 @@ public class UnitController : MonoBehaviour, IObject
             return;
         }
         isMoving = true;
+        if (!CheckAndMove(targetNode,isPlayerAction,false))return;
         CheckAndMove(targetNode,isPlayerAction,false);
         targetCord2 = currentNode.cords + moveDirectionInt2;
         targetNode2 = _gridManager.GetTileAt(targetCord2);
@@ -262,9 +263,9 @@ public class UnitController : MonoBehaviour, IObject
             return targetNode.currentTag;
         }
     }
-    private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
+    private bool CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
     {
-        if (isCrashed)return;
+        if (isCrashed)return false;
         Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, checkNode);
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
 
@@ -273,22 +274,25 @@ public class UnitController : MonoBehaviour, IObject
         {
             isMoving = false;
             GameEvents.current.onErrorPerformed(checkNode.cords,0);
+            return false;
         }
         else if (targetNodeTag == Node.NodeTag.Obstacle)
         {
             OnCrash(checkNode);
             currentNodeFeedback.transform.position = checkNode.cords;
+            return true;
         }
-        else if (targetNodeTag == Node.NodeTag.Limited && toDirection == checkNode.limitedDir || currentNode.limitedDir == -toDirection)
+        else if ((targetNodeTag == Node.NodeTag.Limited || currentNode.currentTag == Node.NodeTag.Limited) && (toDirection == checkNode.limitedDir || currentNode.limitedDir == -toDirection))
         {
             if (currentNode.limitedDir == -toDirection)
             {
                 isMoving = false;
                 GameEvents.current.onErrorPerformed(currentNode.cords,0);
-                return;
+                return false;
             }
             isMoving = false;
             GameEvents.current.onErrorPerformed(checkNode.cords,0);
+            return false;
         }
         else
         {
@@ -298,7 +302,6 @@ public class UnitController : MonoBehaviour, IObject
             //------------
             if (isTurn)
             {
-                Debug.Log("dam");
                 forwardDirection = (rightDirection * curInput.x);
                 rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x)*isReverse;
             }
@@ -309,6 +312,7 @@ public class UnitController : MonoBehaviour, IObject
             currentNode = checkNode;
             currentNode.Interact(previusNode,currentNode,this);
             currentNodeFeedback.transform.position = currentNode.cords;
+            return true;
         }
     }
     void UnitStartFeedback()

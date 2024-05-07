@@ -21,7 +21,6 @@ public class ReverseUI : MonoBehaviour
     }
     private void GearChangeFeedback(int id, int isUp)
     {
-        Debug.Log("buldm.mğ4");
         if (isUp == 1)
         {
             GearOBJ.transform.DOMove(GearPoints[0].position,0.25f).SetEase(Ease.OutExpo);
