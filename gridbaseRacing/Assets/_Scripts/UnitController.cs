@@ -46,6 +46,7 @@ public class UnitController : MonoBehaviour, IObject
     public Vector2Int forwardDirection;
     public Vector2Int rightDirection;
     public Vector2Int lastInput;
+    public Vector2Int curInput;
 
     private List<Vector3> movePath;
 
@@ -66,18 +67,23 @@ public class UnitController : MonoBehaviour, IObject
         GameEvents.current.onCameraSwitch += CheckInputs;
         forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z)) ;
         rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
+        curInput = forwardDirection;
         movePath = new List<Vector3>();
     }
     private void OnEnable()
     {
         _unitControls.Enable();
-        _unitControls.BasicMovement.Move.performed += MoveInput;
+        _unitControls.BasicMovement.Gas.performed += Gas;
+        _unitControls.BasicMovement.Move.started += DirectionInput;
+        _unitControls.BasicMovement.Move.canceled += ResetDirection;
         _unitControls.BasicMovement.Reverse.performed += reverseGear;
     }
     private void OnDisable()
     {
         _unitControls.Disable();
-        _unitControls.BasicMovement.Move.performed -= MoveInput;
+        _unitControls.BasicMovement.Gas.performed -= Gas;
+        _unitControls.BasicMovement.Move.started -= DirectionInput;
+        _unitControls.BasicMovement.Move.canceled -= ResetDirection;
         _unitControls.BasicMovement.Reverse.performed -= reverseGear;
         DOTween.KillAll();
     }
@@ -92,10 +98,7 @@ public class UnitController : MonoBehaviour, IObject
         {
             _unitControls.Disable();
         }
-
     }
-
-
     private void OnCrash(Node _crashNode)
     {
         isCrashed = true;
@@ -103,28 +106,54 @@ public class UnitController : MonoBehaviour, IObject
         _unitControls.BasicMovement.Move.performed -= MoveInput;
         CrashFeedback(_crashNode);
     }
+
+    private void Gas(InputAction.CallbackContext ctx)
+    {
+        if (curInput == new Vector2Int(0,1))
+        {
+            MoveLocal(forwardDirection,true,false);
+        }
+        if  (curInput == new Vector2Int(-1, 0) || curInput == new Vector2Int(1, 0) )
+        {
+            MoveLocalTurn(forwardDirection,rightDirection*curInput.x,true,true);
+        }
+    }
+
+    private void DirectionInput(InputAction.CallbackContext ctx)
+    {
+        Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
+        Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
+        if (input == new Vector2Int(-1, 0) || input == new Vector2Int(1, 0))
+        {
+            curInput = input;
+            WheelsRotateFeedback(20); 
+        }
+        GameEvents.current.onDirectionSwitchPerformed(0,curInput);
+    }
+    
     private void MoveInput(InputAction.CallbackContext ctx)
     {
         Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
         Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
         lastInput = input;
-        if (input == new Vector2Int(0,1))
-        {
-            MoveLocal(forwardDirection,true,false);
-            GameEvents.current.onReverseSwitchPerformed(0,isReverse);
-        }
-        // if (input == new Vector2Int(0,-1))
+        // if (input == new Vector2Int(0,1))
         // {
-        //     isReverse = -1;
-        //     MoveLocal(forwardDirection,true,false);
-        //     GameEvents.current.onReverseSwitchPerformed(0,isReverse);
+        //     if (isReverse ==-1)
+        //     {
+        //         reverseGear(new InputAction.CallbackContext());
+        //         return;
+        //     }
+        //     curInput = input;
+        //     WheelsRotateFeedback(0);
         // }
-        else if (input == new Vector2Int(-1, 0) || input == new Vector2Int(1, 0))
-        {
-            MoveLocalTurn(forwardDirection,rightDirection*input.x,true,true);
-        }
+        // if (input == new Vector2Int(0, -1))
+        // {
+        //     if (isReverse ==1)
+        //     {
+        //         reverseGear(new InputAction.CallbackContext());
+        //     }
+        // }
     }
-
     private void reverseGear(InputAction.CallbackContext ctx)
     {
         isReverse = isReverse*-1;
@@ -220,7 +249,7 @@ public class UnitController : MonoBehaviour, IObject
             if (isTurn)
             {
                 Debug.Log("dam");
-                forwardDirection = (rightDirection * lastInput.x);
+                forwardDirection = (rightDirection * curInput.x);
                 rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x)*isReverse;
             }
             currentNode.UnInteract(this);
@@ -244,19 +273,16 @@ public class UnitController : MonoBehaviour, IObject
         movePath.Add((currentNode.cords.ConvertTo<Vector3>()+(currentNode.cords+targetNode.cords).ConvertTo<Vector3>()/2)/2);
         movePath.Add(targetNode.cords);
         transform.DOPath(movePath.ToArray(), 1.25f, PathType.CatmullRom).SetLookAt(1.25f,Vector3.forward*isReverse).SetEase(Ease.OutQuart);
-        
-        
         // DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        // MoveSequence.Insert(5f,transform.DOMove(targetNode.cords, 1f).OnComplete((() => {if(!isPlayerAction)_unitControls.Enable();})));
+        // MoveSequence.Insert(5f,transform.DOMove(targetNode.cords, 1f).OnComplete((() => {if(!isPlayerAction)_unitControls.Enab3le();})));
         // transform.DOLookAt(targetNode.cords, 0f);
         
         //TİRES
         _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
         {
-            wheel.transform.DOLocalRotate(new Vector3(-360*isReverse,0,0), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
+            wheel.transform.GetChild(0).DOLocalRotate(new Vector3(0,0,360*isReverse), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
-        
         // Başka object varsa gideceği yerde
         if (targetNode.onNodeObject == null)
         {
@@ -279,7 +305,19 @@ public class UnitController : MonoBehaviour, IObject
             wheel.transform.DOLocalRotate(new Vector3(-360,0,0), 1f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
         }
     }
-    
+
+    void WheelsRotateFeedback(float targetfloat)
+    {
+        _wheels[1].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutCubic);
+        _wheels[3].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutCubic);
+    }
+
+    void ResetDirection(InputAction.CallbackContext ctx)
+    {
+        curInput = new Vector2Int(0,1);
+        GameEvents.current.onDirectionSwitchPerformed(0,curInput);
+        WheelsRotateFeedback(0);
+    }
     void CrashFeedback(Node node)
     {
         VehicleFeedBack();

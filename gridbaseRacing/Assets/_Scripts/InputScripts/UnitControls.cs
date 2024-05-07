@@ -44,6 +44,15 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Gas"",
+                    ""type"": ""Button"",
+                    ""id"": ""410d7246-b980-483d-b239-f9d44cbf9082"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -51,7 +60,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""name"": ""2D Vector"",
                     ""id"": ""2498f537-a3c0-488b-be0d-da29db9de15c"",
                     ""path"": ""2DVector"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
@@ -106,7 +115,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""name"": ""2D Vector Controller"",
                     ""id"": ""5ead46cf-4660-4e00-abf8-4a659462e822"",
                     ""path"": ""2DVector"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
@@ -160,11 +169,22 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""18ac3457-d6e6-4447-8384-849b03df51d6"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reverse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4272c6a-e2f7-438f-bf42-5dbf2d1f1bd8"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -344,6 +364,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         m_BasicMovement = asset.FindActionMap("BasicMovement", throwIfNotFound: true);
         m_BasicMovement_Move = m_BasicMovement.FindAction("Move", throwIfNotFound: true);
         m_BasicMovement_Reverse = m_BasicMovement.FindAction("Reverse", throwIfNotFound: true);
+        m_BasicMovement_Gas = m_BasicMovement.FindAction("Gas", throwIfNotFound: true);
         // GeneralKeys
         m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
         m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
@@ -412,12 +433,14 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     private List<IBasicMovementActions> m_BasicMovementActionsCallbackInterfaces = new List<IBasicMovementActions>();
     private readonly InputAction m_BasicMovement_Move;
     private readonly InputAction m_BasicMovement_Reverse;
+    private readonly InputAction m_BasicMovement_Gas;
     public struct BasicMovementActions
     {
         private @UnitControls m_Wrapper;
         public BasicMovementActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_BasicMovement_Move;
         public InputAction @Reverse => m_Wrapper.m_BasicMovement_Reverse;
+        public InputAction @Gas => m_Wrapper.m_BasicMovement_Gas;
         public InputActionMap Get() { return m_Wrapper.m_BasicMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -433,6 +456,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Reverse.started += instance.OnReverse;
             @Reverse.performed += instance.OnReverse;
             @Reverse.canceled += instance.OnReverse;
+            @Gas.started += instance.OnGas;
+            @Gas.performed += instance.OnGas;
+            @Gas.canceled += instance.OnGas;
         }
 
         private void UnregisterCallbacks(IBasicMovementActions instance)
@@ -443,6 +469,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             @Reverse.started -= instance.OnReverse;
             @Reverse.performed -= instance.OnReverse;
             @Reverse.canceled -= instance.OnReverse;
+            @Gas.started -= instance.OnGas;
+            @Gas.performed -= instance.OnGas;
+            @Gas.canceled -= instance.OnGas;
         }
 
         public void RemoveCallbacks(IBasicMovementActions instance)
@@ -526,6 +555,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnReverse(InputAction.CallbackContext context);
+        void OnGas(InputAction.CallbackContext context);
     }
     public interface IGeneralKeysActions
     {

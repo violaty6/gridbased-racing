@@ -224,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 4225038887318555678}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.311, y: 0.248, z: -0.36}
+  m_LocalPosition: {x: -0.184, y: 0.248, z: -0.36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -290,7 +290,7 @@ Transform:
   m_GameObject: {fileID: 5180214651902344042}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.70710665, z: -0, w: 0.70710695}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.1099, y: 0, z: 0}
   m_LocalScale: {x: 115, y: 115, z: 115}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -393,7 +393,7 @@ Transform:
   m_GameObject: {fileID: 5446876098938615108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.291, y: 0.248, z: -0.362}
+  m_LocalPosition: {x: 0.191, y: 0.248, z: -0.362}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -534,7 +534,7 @@ Transform:
   m_GameObject: {fileID: 6185406868183529758}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4999998, y: -0.49999973, z: -0.50000024, w: 0.50000024}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1287, y: 0, z: 0}
   m_LocalScale: {x: 115, y: 115, z: 115}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -671,14 +671,17 @@ MonoBehaviour:
   _body: {fileID: 7884815604393886808}
   isCrashed: 0
   isMoving: 0
-  canTurbo: 1
-  isTurbo: 0
+  isReverse: 1
   _gridManager: {fileID: 0}
   currentNodeFeedback: {fileID: 0}
   _UnitEnginePower: 2
   SmokeEffectSlot: {fileID: 5731481112056806981}
   ExplosionForce: 350
   FeelCrashFeedback: {fileID: 5561674013846306953}
+  forwardDirection: {x: 0, y: 0}
+  rightDirection: {x: 0, y: 0}
+  lastInput: {x: 0, y: 0}
+  curInput: {x: 0, y: 0}
   previusNode: {fileID: 0}
 --- !u!1 &7078824182416376838
 GameObject:

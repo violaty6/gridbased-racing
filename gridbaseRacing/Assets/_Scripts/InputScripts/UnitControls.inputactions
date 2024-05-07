@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Gas",
+                    "type": "Button",
+                    "id": "410d7246-b980-483d-b239-f9d44cbf9082",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -29,7 +38,7 @@
                     "name": "2D Vector",
                     "id": "2498f537-a3c0-488b-be0d-da29db9de15c",
                     "path": "2DVector",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
@@ -84,7 +93,7 @@
                     "name": "2D Vector Controller",
                     "id": "5ead46cf-4660-4e00-abf8-4a659462e822",
                     "path": "2DVector",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
@@ -138,11 +147,22 @@
                 {
                     "name": "",
                     "id": "18ac3457-d6e6-4447-8384-849b03df51d6",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c4272c6a-e2f7-438f-bf42-5dbf2d1f1bd8",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Gas",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
