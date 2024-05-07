@@ -15,11 +15,11 @@ public class SteeringWheelUI : MonoBehaviour
     {
         if (direction == new Vector2Int(0,1))
         {
-            transform.DOLocalRotate(new Vector3(0, 0, 0), 1f).SetEase(Ease.OutQuart);
+            transform.DOLocalRotate(new Vector3(0, 0, 0), 0.4f).SetEase(Ease.OutQuart);
         }
         if (direction == new Vector2Int(1,0) || direction == new Vector2Int(-1,0))
         {
-           transform.DOLocalRotate(new Vector3(0, 0, -89 * direction.x), 1f).SetEase(Ease.OutQuart);
+           transform.DOLocalRotate(new Vector3(0, 0, -89 * direction.x), 0.4f).SetEase(Ease.OutQuart);
         }
     }
 

@@ -26,6 +26,7 @@ public class UnitController : MonoBehaviour, IObject
     
     [SerializeField] private bool isCrashed = false;
     [SerializeField] private bool isMoving = false;
+    [SerializeField] private bool isHolding = false;
     
     [SerializeField] private int isReverse = 1;
     
@@ -47,9 +48,7 @@ public class UnitController : MonoBehaviour, IObject
     public Vector2Int rightDirection;
     public Vector2Int lastInput;
     public Vector2Int curInput;
-
     private List<Vector3> movePath;
-
     public Node currentNode { get; set; }
     public Node previusNode;
     private void Awake()
@@ -73,21 +72,24 @@ public class UnitController : MonoBehaviour, IObject
     private void OnEnable()
     {
         _unitControls.Enable();
-        _unitControls.BasicMovement.Gas.performed += Gas;
-        _unitControls.BasicMovement.Move.started += DirectionInput;
-        _unitControls.BasicMovement.Move.canceled += ResetDirection;
+        _unitControls.BasicMovement.Gas.started += GasInput;
+        _unitControls.BasicMovement.Gas.performed += GasInput;
+        _unitControls.BasicMovement.Gas.canceled += NotHolding;
+        _unitControls.BasicMovement.Direction.started += DirectionInput;
+        _unitControls.BasicMovement.Direction.canceled += ResetDirection;
         _unitControls.BasicMovement.Reverse.performed += reverseGear;
     }
     private void OnDisable()
     {
         _unitControls.Disable();
-        _unitControls.BasicMovement.Gas.performed -= Gas;
-        _unitControls.BasicMovement.Move.started -= DirectionInput;
-        _unitControls.BasicMovement.Move.canceled -= ResetDirection;
+        _unitControls.BasicMovement.Gas.started -= GasInput;
+        _unitControls.BasicMovement.Gas.performed -= GasInput;
+        _unitControls.BasicMovement.Gas.canceled -= NotHolding;
+        _unitControls.BasicMovement.Direction.started -= DirectionInput;
+        _unitControls.BasicMovement.Direction.canceled -= ResetDirection;
         _unitControls.BasicMovement.Reverse.performed -= reverseGear;
         DOTween.KillAll();
     }
-
     private void CheckInputs(int id,bool switched)
     {
         if (switched)
@@ -103,22 +105,58 @@ public class UnitController : MonoBehaviour, IObject
     {
         isCrashed = true;
         _unitControls.Disable();
-        _unitControls.BasicMovement.Move.performed -= MoveInput;
         CrashFeedback(_crashNode);
     }
 
-    private void Gas(InputAction.CallbackContext ctx)
+    private void Holding(InputAction.CallbackContext ctx)
     {
+
+    }
+    private void GasInput(InputAction.CallbackContext ctx)
+    {
+        Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
+        Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
+        if (ctx.performed)
+        {
+            isHolding = true;
+            StartCoroutine(GasRepeatedly(input));
+        }
+        else if (ctx.canceled)
+        {
+            isHolding = false;
+            StopCoroutine(GasRepeatedly(input));
+        }
+        Gas(input);
+    }
+    private IEnumerator GasRepeatedly(Vector2Int input)
+    {
+        while (isHolding)
+        {
+            yield return new WaitForSeconds(0.35f);
+            if(isHolding) Gas(input);
+        }
+    }
+    private void Gas(Vector2Int input)
+    {
+        if(isCrashed) return;
+        lastInput = input;
+        if (input == new Vector2Int(0,-1) && isReverse ==1)
+        {
+            reverseGear(new InputAction.CallbackContext());
+        }
+        if (input == new Vector2Int(0,1) && isReverse ==-1)
+        {
+            reverseGear(new InputAction.CallbackContext());
+        }
         if (curInput == new Vector2Int(0,1))
         {
             MoveLocal(forwardDirection,true,false);
         }
-        if  (curInput == new Vector2Int(-1, 0) || curInput == new Vector2Int(1, 0) )
+        else if  (curInput == new Vector2Int(-1, 0) || curInput == new Vector2Int(1, 0) )
         {
             MoveLocalTurn(forwardDirection,rightDirection*curInput.x,true,true);
         }
     }
-
     private void DirectionInput(InputAction.CallbackContext ctx)
     {
         Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
@@ -126,7 +164,7 @@ public class UnitController : MonoBehaviour, IObject
         if (input == new Vector2Int(-1, 0) || input == new Vector2Int(1, 0))
         {
             curInput = input;
-            WheelsRotateFeedback(20); 
+            WheelsRotateFeedback(23); 
         }
         GameEvents.current.onDirectionSwitchPerformed(0,curInput);
     }
@@ -195,7 +233,6 @@ public class UnitController : MonoBehaviour, IObject
         }
         Vector3Int targetCord2 = targetNode.cords + moveDirectionInt2;
         Node targetNode2 = _gridManager.GetTileAt(targetCord2);
-
 
         if (targetNode2 == null)
         {
@@ -308,8 +345,8 @@ public class UnitController : MonoBehaviour, IObject
 
     void WheelsRotateFeedback(float targetfloat)
     {
-        _wheels[1].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutCubic);
-        _wheels[3].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutCubic);
+        _wheels[1].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutQuint);
+        _wheels[3].transform.DOLocalRotate(new Vector3(0, targetfloat*curInput.x, 0), 0.6f).SetEase(Ease.OutQuint);
     }
 
     void ResetDirection(InputAction.CallbackContext ctx)
@@ -363,6 +400,11 @@ public class UnitController : MonoBehaviour, IObject
                 expolionObject.AddExplosionForce(ExplosionForce, _top.transform.position, 10f);
             }
         });
+    }
+
+    private void NotHolding(InputAction.CallbackContext ctx)
+    {
+        isHolding = false;
     }
     public void Move(Node nextNode,bool isPlayerAction)
     {

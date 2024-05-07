@@ -28,27 +28,27 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
             ""id"": ""4c2d207a-a64c-4a7f-8548-2548aa959a0b"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""Direction"",
                     ""type"": ""Value"",
                     ""id"": ""eac05877-e2a8-47bf-812c-4dbb1af627ae"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Gas"",
+                    ""type"": ""Value"",
+                    ""id"": ""d4ee778c-7c24-4554-83bb-d8a23fdd4aab"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
                     ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Reverse"",
                     ""type"": ""Button"",
                     ""id"": ""a67c0626-7d71-4fab-a780-b081d86d44bb"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Gas"",
-                    ""type"": ""Button"",
-                    ""id"": ""410d7246-b980-483d-b239-f9d44cbf9082"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -60,34 +60,12 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""name"": ""2D Vector"",
                     ""id"": ""2498f537-a3c0-488b-be0d-da29db9de15c"",
                     ""path"": ""2DVector"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""8d6cc230-311d-4348-a2a9-db002d5a5d84"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""7619720d-daf5-404a-a999-c34dbe472bd1"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""left"",
@@ -96,7 +74,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -107,7 +85,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -115,34 +93,12 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""name"": ""2D Vector Controller"",
                     ""id"": ""5ead46cf-4660-4e00-abf8-4a659462e822"",
                     ""path"": ""2DVector"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""b61ba2f0-7447-42d6-896f-b53a35f427b5"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""d40fe4fb-09ef-4d04-b419-ed57d13e2ac1"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""left"",
@@ -151,7 +107,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -162,7 +118,7 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -178,15 +134,70 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""c4272c6a-e2f7-438f-bf42-5dbf2d1f1bd8"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": ""Press"",
+                    ""name"": ""2D Vector"",
+                    ""id"": ""908f5186-c9fb-4a63-9181-510d7fd4468f"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""67f535d5-e1f0-4950-97fc-4ef8156585c0"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Gas"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""a59d68a6-17cf-4a92-bcd3-3aabe73b6844"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector Controller"",
+                    ""id"": ""a477a856-1e41-4faf-a83d-07f09bea3883"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""ac4f7f3e-a725-4285-ad95-f058ff5f48f0"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""25159a33-5ca8-4189-bc12-abe743b761b9"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gas"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -362,9 +373,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
 }");
         // BasicMovement
         m_BasicMovement = asset.FindActionMap("BasicMovement", throwIfNotFound: true);
-        m_BasicMovement_Move = m_BasicMovement.FindAction("Move", throwIfNotFound: true);
-        m_BasicMovement_Reverse = m_BasicMovement.FindAction("Reverse", throwIfNotFound: true);
+        m_BasicMovement_Direction = m_BasicMovement.FindAction("Direction", throwIfNotFound: true);
         m_BasicMovement_Gas = m_BasicMovement.FindAction("Gas", throwIfNotFound: true);
+        m_BasicMovement_Reverse = m_BasicMovement.FindAction("Reverse", throwIfNotFound: true);
         // GeneralKeys
         m_GeneralKeys = asset.FindActionMap("GeneralKeys", throwIfNotFound: true);
         m_GeneralKeys_Restart = m_GeneralKeys.FindAction("Restart", throwIfNotFound: true);
@@ -431,16 +442,16 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     // BasicMovement
     private readonly InputActionMap m_BasicMovement;
     private List<IBasicMovementActions> m_BasicMovementActionsCallbackInterfaces = new List<IBasicMovementActions>();
-    private readonly InputAction m_BasicMovement_Move;
-    private readonly InputAction m_BasicMovement_Reverse;
+    private readonly InputAction m_BasicMovement_Direction;
     private readonly InputAction m_BasicMovement_Gas;
+    private readonly InputAction m_BasicMovement_Reverse;
     public struct BasicMovementActions
     {
         private @UnitControls m_Wrapper;
         public BasicMovementActions(@UnitControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_BasicMovement_Move;
-        public InputAction @Reverse => m_Wrapper.m_BasicMovement_Reverse;
+        public InputAction @Direction => m_Wrapper.m_BasicMovement_Direction;
         public InputAction @Gas => m_Wrapper.m_BasicMovement_Gas;
+        public InputAction @Reverse => m_Wrapper.m_BasicMovement_Reverse;
         public InputActionMap Get() { return m_Wrapper.m_BasicMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -450,28 +461,28 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_BasicMovementActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_BasicMovementActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Reverse.started += instance.OnReverse;
-            @Reverse.performed += instance.OnReverse;
-            @Reverse.canceled += instance.OnReverse;
+            @Direction.started += instance.OnDirection;
+            @Direction.performed += instance.OnDirection;
+            @Direction.canceled += instance.OnDirection;
             @Gas.started += instance.OnGas;
             @Gas.performed += instance.OnGas;
             @Gas.canceled += instance.OnGas;
+            @Reverse.started += instance.OnReverse;
+            @Reverse.performed += instance.OnReverse;
+            @Reverse.canceled += instance.OnReverse;
         }
 
         private void UnregisterCallbacks(IBasicMovementActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Reverse.started -= instance.OnReverse;
-            @Reverse.performed -= instance.OnReverse;
-            @Reverse.canceled -= instance.OnReverse;
+            @Direction.started -= instance.OnDirection;
+            @Direction.performed -= instance.OnDirection;
+            @Direction.canceled -= instance.OnDirection;
             @Gas.started -= instance.OnGas;
             @Gas.performed -= instance.OnGas;
             @Gas.canceled -= instance.OnGas;
+            @Reverse.started -= instance.OnReverse;
+            @Reverse.performed -= instance.OnReverse;
+            @Reverse.canceled -= instance.OnReverse;
         }
 
         public void RemoveCallbacks(IBasicMovementActions instance)
@@ -553,9 +564,9 @@ public partial class @UnitControls: IInputActionCollection2, IDisposable
     public GeneralKeysActions @GeneralKeys => new GeneralKeysActions(this);
     public interface IBasicMovementActions
     {
-        void OnMove(InputAction.CallbackContext context);
-        void OnReverse(InputAction.CallbackContext context);
+        void OnDirection(InputAction.CallbackContext context);
         void OnGas(InputAction.CallbackContext context);
+        void OnReverse(InputAction.CallbackContext context);
     }
     public interface IGeneralKeysActions
     {
