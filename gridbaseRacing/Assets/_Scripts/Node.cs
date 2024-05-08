@@ -78,12 +78,10 @@ public class Node : MonoBehaviour,INode
             DestroyImmediate(child.gameObject);
         }
     }
-
     private void currentTypeCheck()
     {
         currentType = instObj.GetComponent<INode>();
     }
-
     public void Init()
     {
         currentType.Init();
@@ -92,12 +90,10 @@ public class Node : MonoBehaviour,INode
     {
         currentType.Interact(fromNode,toNode,interactOwner);
     }
-
     public Node PredictInteraction(Node fromNode, Node toNode)
     {
         return currentType.PredictInteraction(fromNode, toNode);
     }
-
     public void UnInteract(IObject interactOwner)
     {
         currentType.UnInteract(interactOwner);

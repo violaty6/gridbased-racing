@@ -126,6 +126,14 @@ public class GridManager : MonoBehaviour
          return result;
      }
 
+     public bool CanUnitMove(IObject unit, Node curNode,Node targetNode,Vector2 unitDirection)
+     { 
+         if (targetNode.limitedDir == unitDirection || curNode.limitedDir == -unitDirection) {return false;}
+         else if (targetNode.currentTag == Node.NodeTag.Obstacle) return true;
+         else if (targetNode.currentTag == Node.NodeTag.Void) return false;
+         else return true;
+     }
+
       public List<Node> OneDirectionToLast(Node startNode ,Vector2 direction)
      {
           List<Node> resultList = new List<Node>{};

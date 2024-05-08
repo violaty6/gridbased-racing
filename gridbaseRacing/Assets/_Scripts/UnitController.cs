@@ -209,7 +209,10 @@ public class UnitController : MonoBehaviour, IObject
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
-        if (targetNode == null)
+        if (targetNode == null) { GameEvents.current.onErrorPerformed(targetCord,0);return; }
+        Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, targetNode);
+        if ((currentNode.currentTag == Node.NodeTag.Limited && currentNode.limitedDir == -toDirection)){ GameEvents.current.onErrorPerformed(currentNode.cords,0);return; }
+        else if (_gridManager.CanUnitMove(this,currentNode,targetNode,toDirection) == false)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
             return;
@@ -224,32 +227,27 @@ public class UnitController : MonoBehaviour, IObject
         moveDirection.z = input1.y;
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int moveDirectionInt2 = new Vector3Int(Mathf.RoundToInt(input2.x), 0, Mathf.RoundToInt(input2.y));
-
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
-        if (targetNode == null)
+        if(targetNode == null){GameEvents.current.onErrorPerformed(targetCord,0); return; }
+        Vector3Int targetCord2 = targetNode.cords + moveDirectionInt2;
+        Node targetNode2 = _gridManager.GetTileAt(targetCord2);
+        if(targetNode2 == null){GameEvents.current.onErrorPerformed(targetCord2,0); return; }
+        Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, targetNode);
+        Vector2 toDirection2 = _gridManager.GetDirectionNodeToNode(targetNode, targetNode2);
+
+        if (_gridManager.CanUnitMove(this,targetNode,targetNode2,toDirection2) == false)
+        {
+            GameEvents.current.onErrorPerformed(targetCord2,0);
+            return;
+        }
+        else if (_gridManager.CanUnitMove(this,currentNode,targetNode,toDirection) == false)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
             return;
         }
-        Vector3Int targetCord2 = targetNode.cords + moveDirectionInt2;
-        Node targetNode2 = _gridManager.GetTileAt(targetCord2);
-
-        if (targetNode2 == null)
-        {
-            GameEvents.current.onErrorPerformed(targetCord2,0);
-            return;
-        }
         isMoving = true;
-        if (!CheckAndMove(targetNode,isPlayerAction,false))return;
-        CheckAndMove(targetNode,isPlayerAction,false);
-        targetCord2 = currentNode.cords + moveDirectionInt2;
-        targetNode2 = _gridManager.GetTileAt(targetCord2);
-        if (targetNode2 == null)
-        {
-            GameEvents.current.onErrorPerformed(targetCord2,0);
-            return;
-        }
+        CheckAndMove(targetNode, isPlayerAction, false);
         CheckAndMove(targetNode2,isPlayerAction,isTurn);
     }
     private Node.NodeTag CheckNode(Node targetNode)
@@ -266,7 +264,6 @@ public class UnitController : MonoBehaviour, IObject
     private bool CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
     {
         if (isCrashed)return false;
-        Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, checkNode);
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
 
         
@@ -281,18 +278,6 @@ public class UnitController : MonoBehaviour, IObject
             OnCrash(checkNode);
             currentNodeFeedback.transform.position = checkNode.cords;
             return true;
-        }
-        else if ((targetNodeTag == Node.NodeTag.Limited || currentNode.currentTag == Node.NodeTag.Limited) && (toDirection == checkNode.limitedDir || currentNode.limitedDir == -toDirection))
-        {
-            if (currentNode.limitedDir == -toDirection)
-            {
-                isMoving = false;
-                GameEvents.current.onErrorPerformed(currentNode.cords,0);
-                return false;
-            }
-            isMoving = false;
-            GameEvents.current.onErrorPerformed(checkNode.cords,0);
-            return false;
         }
         else
         {
