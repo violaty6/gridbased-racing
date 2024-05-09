@@ -31673,10 +31673,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7908211133153779170, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.96325684
+      objectReference: {fileID: 0}
+    - target: {fileID: 7908211133153779170, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.3999634
+      objectReference: {fileID: 0}
     - target: {fileID: 8073719569199902081, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
         type: 3}
       propertyPath: m_Name
       value: UI-Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8824456164120995864, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: gasolineInt
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

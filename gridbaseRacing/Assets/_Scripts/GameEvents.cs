@@ -18,6 +18,7 @@ public class GameEvents : MonoBehaviour
     public event Action<Vector3,int> onError;
     public event Action<int,bool> onCameraSwitch;
     public event Action<int,int> onReverseSwitch;
+    public event Action<int> onGasolineOut;
     public event Action<int,Vector2Int> onDirectionSwitch;
 
     public  void onMovePerformed(Transform trans,int id)
@@ -25,6 +26,13 @@ public class GameEvents : MonoBehaviour
         if (onMove != null)
         {
             onMove(id);
+        }
+    }
+    public  void onGasolineOutPerformed(int id)
+    {
+        if (onGasolineOut != null)
+        {
+            onGasolineOut(id);
         }
     }
     

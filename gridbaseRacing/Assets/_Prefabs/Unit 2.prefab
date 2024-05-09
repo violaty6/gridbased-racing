@@ -671,12 +671,14 @@ MonoBehaviour:
   _body: {fileID: 7884815604393886808}
   isCrashed: 0
   isMoving: 0
+  isHolding: 0
   isReverse: 1
   _gridManager: {fileID: 0}
   currentNodeFeedback: {fileID: 0}
   _UnitEnginePower: 2
   SmokeEffectSlot: {fileID: 5731481112056806981}
   ExplosionForce: 350
+  gasRepeatTime: 0.35
   FeelCrashFeedback: {fileID: 5561674013846306953}
   forwardDirection: {x: 0, y: 0}
   rightDirection: {x: 0, y: 0}
@@ -1939,6 +1941,11 @@ PrefabInstance:
       propertyPath: m_Parameters.shadowBias
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 813377777994339919, guid: e2f97695b27ad4b41bc7b9ee858475a5,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.15934443
+      objectReference: {fileID: 0}
     - target: {fileID: 1563327098249805140, guid: e2f97695b27ad4b41bc7b9ee858475a5,
         type: 3}
       propertyPath: m_Name
@@ -2017,6 +2024,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Parameters.shadowBias
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813377777994339919, guid: e2f97695b27ad4b41bc7b9ee858475a5,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.15934443
       objectReference: {fileID: 0}
     - target: {fileID: 1563327098249805140, guid: e2f97695b27ad4b41bc7b9ee858475a5,
         type: 3}

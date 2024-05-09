@@ -281,7 +281,7 @@ public class UnitController : MonoBehaviour, IObject
         }
         else
         {
-            if(isPlayerAction)GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
+            if(isPlayerAction && !isTurn)GameEvents.current.onMovePerformed(SmokeEffectSlot,0); // MOVE event ----------------------------------
             GameEvents.current.onSmokePerformed(SmokeEffectSlot,0); // SMOKE event ----------------------------------
             MoveFeedBack(checkNode,isPlayerAction);
             //------------

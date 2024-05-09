@@ -24,14 +24,27 @@ public class ReverseUI : MonoBehaviour
         if (isUp == 1)
         {
             GearOBJ.transform.DOMove(GearPoints[0].position,0.25f).SetEase(Ease.OutExpo);
+            DOTween.Shake(() => transform.rotation.eulerAngles, x =>
+            {
+                var rotation = transform.rotation;
+                rotation.eulerAngles = Vector3.forward * x.x;
+                transform.rotation = rotation;
+            }, 0.25f, 5, 8, 0);
+            // transform.DOShakeScale(0.2f, 0.2f,10,90f,true,ShakeRandomnessMode.Full);
             GearImage.sprite = GearSprites[0];
         }
         else
         {
             GearOBJ.transform.DOMove(GearPoints[1].position,0.25f).SetEase(Ease.OutExpo);
+            DOTween.Shake(() => transform.rotation.eulerAngles, x =>
+            {
+                var rotation = transform.rotation;
+                rotation.eulerAngles = Vector3.forward * x.x;
+                transform.rotation = rotation;
+            }, 0.25f, 5, 8, 0);
+            // transform.DOShakeScale(0.2f, 0.2f,10,90f,true,ShakeRandomnessMode.Full);
             GearImage.sprite = GearSprites[1];
         }
-        
     }
 
 }
