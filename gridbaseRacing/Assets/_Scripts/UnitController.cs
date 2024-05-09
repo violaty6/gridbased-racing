@@ -67,7 +67,7 @@ public class UnitController : MonoBehaviour, IObject
         GameEvents.current.onCameraSwitch += CheckInputs;
         forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z)) ;
         rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
-        curInput = forwardDirection;
+        curInput = new Vector2Int(0,1);
         movePath = new List<Vector3>();
     }
     private void OnEnable()

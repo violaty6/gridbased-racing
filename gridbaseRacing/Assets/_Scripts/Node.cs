@@ -126,7 +126,17 @@ public class Node : MonoBehaviour,INode
     private void LimitDirection()
     {
 #if UNITY_EDITOR
-        LimiterSocket.transform.LookAt(new Vector3(-limitedDir.x*90,0,-limitedDir.y*90));
+        
+        if (limitedDir.y ==0)
+        {
+            LimiterSocket.transform.eulerAngles = (new Vector3(0,limitedDir.x*90,0));
+        }
+        else if (limitedDir.x == 0)
+        {
+            float angle = limitedDir.y * 180;
+            if (angle < 0) angle = 0;
+            LimiterSocket.transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+        }
 #endif
     }
     [ShowIf("isLimited")]
