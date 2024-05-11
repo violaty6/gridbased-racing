@@ -210,9 +210,9 @@ public class UnitController : MonoBehaviour, IObject
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
         if (targetNode == null) { GameEvents.current.onErrorPerformed(targetCord,0);return; }
+        Node targetNodePredict = _gridManager.PredictCheck(currentNode, targetNode);
         Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, targetNode);
-        if ((currentNode.currentTag == Node.NodeTag.Limited && currentNode.limitedDir == -toDirection)){ GameEvents.current.onErrorPerformed(currentNode.cords,0);return; }
-        else if (_gridManager.CanUnitMove(this,currentNode,targetNode,toDirection) == false)
+        if (_gridManager.CanUnitMove(this,currentNode,targetNodePredict,toDirection) == false)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
             return;
@@ -227,21 +227,27 @@ public class UnitController : MonoBehaviour, IObject
         moveDirection.z = input1.y;
         Vector3Int moveDirectionInt = new Vector3Int(Mathf.RoundToInt(moveDirection.x), 0, Mathf.RoundToInt(moveDirection.z));
         Vector3Int moveDirectionInt2 = new Vector3Int(Mathf.RoundToInt(input2.x), 0, Mathf.RoundToInt(input2.y));
+        
         Vector3Int targetCord = currentNode.cords + moveDirectionInt;
         Node targetNode = _gridManager.GetTileAt(targetCord);
+        
         if(targetNode == null){GameEvents.current.onErrorPerformed(targetCord,0); return; }
-        Vector3Int targetCord2 = targetNode.cords + moveDirectionInt2;
+        Node targetNodePredict = _gridManager.PredictCheck(currentNode, targetNode);
+        
+        Vector3Int targetCord2 = targetNodePredict.cords + moveDirectionInt2;
         Node targetNode2 = _gridManager.GetTileAt(targetCord2);
         if(targetNode2 == null){GameEvents.current.onErrorPerformed(targetCord2,0); return; }
+        
+        Node targetNodePredict2= _gridManager.PredictCheck(targetNodePredict, targetNode2);
         Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, targetNode);
-        Vector2 toDirection2 = _gridManager.GetDirectionNodeToNode(targetNode, targetNode2);
+        Vector2 toDirection2 = _gridManager.GetDirectionNodeToNode(targetNodePredict, targetNode2);
 
-        if (_gridManager.CanUnitMove(this,targetNode,targetNode2,toDirection2) == false)
+        if (_gridManager.CanUnitMove(this,targetNodePredict,targetNodePredict2,toDirection2) == false)
         {
             GameEvents.current.onErrorPerformed(targetCord2,0);
             return;
         }
-        else if (_gridManager.CanUnitMove(this,currentNode,targetNode,toDirection) == false)
+        else if (_gridManager.CanUnitMove(this,currentNode,targetNodePredict,toDirection) == false)
         {
             GameEvents.current.onErrorPerformed(targetCord,0);
             return;
@@ -261,23 +267,27 @@ public class UnitController : MonoBehaviour, IObject
             return targetNode.currentTag;
         }
     }
-    private bool CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
+    private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
     {
-        if (isCrashed)return false;
+        if (isCrashed)return;
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
-
-        
         if (targetNodeTag == Node.NodeTag.Void)
         {
             isMoving = false;
             GameEvents.current.onErrorPerformed(checkNode.cords,0);
-            return false;
+            return;
+        }
+        Vector2 toDirection = _gridManager.GetDirectionNodeToNode(currentNode, checkNode);
+        if (_gridManager.CanUnitMove(this,currentNode,checkNode,toDirection) == false)
+        {
+            GameEvents.current.onErrorPerformed(checkNode.cords,0);
+            return;
         }
         else if (targetNodeTag == Node.NodeTag.Obstacle)
         {
             OnCrash(checkNode);
             currentNodeFeedback.transform.position = checkNode.cords;
-            return true;
+            return;
         }
         else
         {
@@ -297,7 +307,7 @@ public class UnitController : MonoBehaviour, IObject
             currentNode = checkNode;
             currentNode.Interact(previusNode,currentNode,this);
             currentNodeFeedback.transform.position = currentNode.cords;
-            return true;
+            return;
         }
     }
     void UnitStartFeedback()
@@ -410,8 +420,6 @@ public class UnitController : MonoBehaviour, IObject
     }
     public void Move(Node nextNode,bool isPlayerAction)
     {
-        Debug.Log("bum");
-
         CheckAndMove(nextNode,isPlayerAction,false);
         isMoving = true;
     }

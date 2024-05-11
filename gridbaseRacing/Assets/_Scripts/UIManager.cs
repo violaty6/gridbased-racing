@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        levelText.text = "LEVEL "+(SceneManager.GetActiveScene().buildIndex+1).ToString();
+        levelText.text = SceneManager.GetActiveScene().name;
         isUnitCam = true;
     }
     public void CameraSwitchButton()

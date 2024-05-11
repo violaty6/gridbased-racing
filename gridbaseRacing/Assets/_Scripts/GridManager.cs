@@ -108,7 +108,7 @@ public class GridManager : MonoBehaviour
          path.Reverse();
          return path;
      }
-     private Node PredictCheck(Node fromNode,Node targetNode)
+     public Node PredictCheck(Node fromNode,Node targetNode)
      {
          bool isFinish = false;
          Node target = targetNode;

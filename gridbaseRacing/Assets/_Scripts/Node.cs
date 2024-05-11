@@ -129,7 +129,7 @@ public class Node : MonoBehaviour,INode
         
         if (limitedDir.y ==0)
         {
-            LimiterSocket.transform.eulerAngles = (new Vector3(0,limitedDir.x*90,0));
+            LimiterSocket.transform.eulerAngles = (new Vector3(0,-limitedDir.x*90,0));
         }
         else if (limitedDir.x == 0)
         {
