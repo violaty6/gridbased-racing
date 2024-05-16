@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6872344818256630711
 RectTransform:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 02c347433e3dcd04092ff91f39e21f38, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fbb964041c2a9aa4a9011c4b1e8ff34c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -95,7 +95,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1305,6 +1305,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelText: {fileID: 9073820776840833961}
+  Uis:
+  - {fileID: 8129253386445975447}
+  - {fileID: 3078939868794422004}
+  - {fileID: 6669394036951029261}
+  - {fileID: 1707531627132962238}
+  - {fileID: 5233943563755418168}
+  - {fileID: 7497743691729571163}
+  - {fileID: 8399049155122067971}
+  - {fileID: 4773450762104929695}
+  - {fileID: 1690093366226279819}
+  - {fileID: 8495002322831198012}
 --- !u!1 &8340614712379293916
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,7 +1351,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 172.04956, y: 159.5098}
+  m_AnchoredPosition: {x: 174.04956, y: 148.5098}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6072515075920168765

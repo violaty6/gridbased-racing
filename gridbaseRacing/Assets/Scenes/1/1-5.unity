@@ -2080,7 +2080,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.36650118, y: 0, z: 0, w: 0.9304176}
-  m_LocalPosition: {x: 2, y: 3.7, z: -3.9}
+  m_LocalPosition: {x: 2, y: 3.1544013, z: -3.314917}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17681,6 +17681,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2790097695253776359, guid: edb9a99814ed4194a8a9adc6cabcbb2e,
         type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2790097695253776359, guid: edb9a99814ed4194a8a9adc6cabcbb2e,
+        type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
@@ -17816,6 +17821,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: -3.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324283289431904799, guid: 83789565ee916ba4190e8c533a4261a0,
+        type: 3}
+      propertyPath: m_Offset.z
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5858331242649460573, guid: 83789565ee916ba4190e8c533a4261a0,
         type: 3}
@@ -17990,10 +18000,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 175372849091424143, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -88.200195
+      objectReference: {fileID: 0}
+    - target: {fileID: 175372849091424143, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -217.59998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5475426619460496719, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -58.30005
+      objectReference: {fileID: 0}
     - target: {fileID: 8073719569199902081, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
         type: 3}
       propertyPath: m_Name
       value: UI-Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8433974746771620700, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 174.0498
+      objectReference: {fileID: 0}
+    - target: {fileID: 8433974746771620700, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 148.50977
       objectReference: {fileID: 0}
     - target: {fileID: 8824456164120995864, guid: 3eb9f90f212c39b4a95e8fb1954e3004,
         type: 3}

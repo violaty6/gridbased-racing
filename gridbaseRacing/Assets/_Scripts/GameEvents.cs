@@ -16,6 +16,7 @@ public class GameEvents : MonoBehaviour
     public event Action<Transform,int> onOil;
     public event Action<Transform,int> onCrash;
     public event Action<Vector3,int> onError;
+    public event Action<int> onLevelComplete;
     public event Action<int,bool> onCameraSwitch;
     public event Action<int,int> onReverseSwitch;
     public event Action<int> onGasolineOut;
@@ -33,6 +34,13 @@ public class GameEvents : MonoBehaviour
         if (onGasolineOut != null)
         {
             onGasolineOut(id);
+        }
+    }
+    public  void onLevelCompletePerformed(int id)
+    {
+        if (onLevelComplete != null)
+        {
+            onLevelComplete(id);
         }
     }
     

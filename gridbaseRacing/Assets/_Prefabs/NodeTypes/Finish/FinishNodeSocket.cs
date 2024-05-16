@@ -17,7 +17,7 @@ public class FinishNodeSocket : MonoBehaviour,INode
         // Debug.Log(direction);
         if (direction == interactOwner.forward)
         {
-            Debug.Log(interactOwner + "win");
+            GameEvents.current.onLevelCompletePerformed(0);
         }
     }
     public Node PredictInteraction(Node fromNode, Node toNode)

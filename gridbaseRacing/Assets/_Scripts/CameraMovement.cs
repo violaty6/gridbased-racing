@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,6 +24,8 @@ public class CameraMovement : MonoBehaviour
         _targetPosition = transform.position; 
         generalActions = new UnitControls();
         GameEvents.current.onCameraSwitch += SwitchCamera;
+        GameEvents.current.onLevelComplete += ZoomCamera;
+        ZoomCameraStart();
     }
 
     private void SwitchCamera(int id,bool isUnitCam)
@@ -70,6 +73,24 @@ public class CameraMovement : MonoBehaviour
         Vector3 right = transform.right * x;
         Vector3 forward = transform.forward * z;
         _input = (forward + right).normalized;
+    }
+    void ZoomCameraStart()
+    {
+        float angle = 0.8f;
+        CinemachineCameraOffset offset =cinemachineCam.GetComponent<CinemachineCameraOffset>();
+        DOTween.To(() => angle, x => angle = x, 0f, 2f).SetEase(Ease.InOutSine)
+            .OnUpdate(() => {
+                offset.m_Offset.z = angle;
+            });
+    }
+    void ZoomCamera(int i)
+    {
+        float angle = 0;
+        CinemachineCameraOffset offset =cinemachineCam.GetComponent<CinemachineCameraOffset>();
+        DOTween.To(() => angle, x => angle = x, 0.8f, 2f).SetEase(Ease.InOutSine)
+            .OnUpdate(() => {
+                offset.m_Offset.z = angle;
+            });
     }
     private void OnDisable()
     {
