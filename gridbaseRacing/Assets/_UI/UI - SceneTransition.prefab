@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 7380719148562233025}
   - component: {fileID: 1619082509335823096}
   - component: {fileID: 5603160535546496022}
+  - component: {fileID: 5027707467029463239}
   m_Layer: 5
   m_Name: UI - SceneTransition
   m_TagString: Untagged
@@ -192,3 +193,16 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 95
+--- !u!114 &5027707467029463239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6208607458962237657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d06da4018cfdb84ab4c20e1c74412d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScreenTransition: {fileID: 4217643732256944105}

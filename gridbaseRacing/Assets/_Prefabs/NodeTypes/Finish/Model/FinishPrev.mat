@@ -65,9 +65,9 @@ Material:
     - _Blend: 0
     - _CastShadows: 1
     - _Cull: 2
-    - _DitherSize: 1
+    - _DitherSize: 1.16
     - _DstBlend: 10
-    - _Opacity: -1.14
+    - _Opacity: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5
@@ -76,5 +76,5 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color: {r: 1, g: 0.5764706, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.09197852, b: 0, a: 1}
   m_BuildTextureStacks: []

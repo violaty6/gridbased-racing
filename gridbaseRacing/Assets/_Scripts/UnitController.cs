@@ -13,6 +13,7 @@ public interface IObject
 {
     public Node currentNode { get; set; }
     public Vector2 forward { get;}
+    public GameObject gameObject{ get;}
     public void Move(Node nextNode,bool isPlayerAction);
     public void Crash(Node crashNode);
 }
@@ -23,8 +24,8 @@ public class UnitController : MonoBehaviour, IObject
     [SerializeField] private List<GameObject> _wheels;
     [SerializeField] private GameObject _top;
     [SerializeField] private GameObject _body;
-    
-    [SerializeField] private bool isCrashed = false;
+    [SerializeField] private List<MeshRenderer> _renderers;
+    [SerializeField] public bool isCrashed = false;
     [SerializeField] private bool isMoving = false;
     [SerializeField] private bool isHolding = false;
     
@@ -44,6 +45,10 @@ public class UnitController : MonoBehaviour, IObject
     public Vector2 forward
     {
         get { return forwardDirection*-isReverse; }
+    }
+    public GameObject gameObject
+    {
+        get { return transform.gameObject; }
     }
     public Vector2Int forwardDirection;
     public Vector2Int rightDirection;
@@ -108,11 +113,6 @@ public class UnitController : MonoBehaviour, IObject
         _unitControls.Disable();
         CrashFeedback(_crashNode);
     }
-
-    private void Holding(InputAction.CallbackContext ctx)
-    {
-
-    }
     private void GasInput(InputAction.CallbackContext ctx)
     {
         Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
@@ -175,30 +175,12 @@ public class UnitController : MonoBehaviour, IObject
         Vector2 inputNotRounded = ctx.ReadValue<Vector2>();
         Vector2Int input = new Vector2Int(Mathf.RoundToInt(inputNotRounded.x), Mathf.RoundToInt(inputNotRounded.y));
         lastInput = input;
-        // if (input == new Vector2Int(0,1))
-        // {
-        //     if (isReverse ==-1)
-        //     {
-        //         reverseGear(new InputAction.CallbackContext());
-        //         return;
-        //     }
-        //     curInput = input;
-        //     WheelsRotateFeedback(0);
-        // }
-        // if (input == new Vector2Int(0, -1))
-        // {
-        //     if (isReverse ==1)
-        //     {
-        //         reverseGear(new InputAction.CallbackContext());
-        //     }
-        // }
     }
     private void reverseGear(InputAction.CallbackContext ctx)
     {
         isReverse = isReverse*-1;
         forwardDirection = -forwardDirection;
         GameEvents.current.onReverseSwitchPerformed(0,isReverse);
-        // rightDirection = -rightDirection;
     }
     private void MoveLocal(Vector2 input, bool isPlayerAction,bool isTurn)
     {
@@ -322,10 +304,6 @@ public class UnitController : MonoBehaviour, IObject
         movePath.Add((currentNode.cords.ConvertTo<Vector3>()+(currentNode.cords+targetNode.cords).ConvertTo<Vector3>()/2)/2);
         movePath.Add(targetNode.cords);
         transform.DOPath(movePath.ToArray(), 1.25f, PathType.CatmullRom).SetLookAt(1.25f,Vector3.forward*isReverse).SetEase(Ease.OutQuart);
-        // DOVirtual.DelayedCall(0.1f, () => { isMoving = false;}).SetEase(Ease.Linear);
-        // MoveSequence.Insert(5f,transform.DOMove(targetNode.cords, 1f).OnComplete((() => {if(!isPlayerAction)_unitControls.Enab3le();})));
-        // transform.DOLookAt(targetNode.cords, 0f);
-        
         //TİRES
         _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
         foreach (var wheel in _wheels)
@@ -412,6 +390,12 @@ public class UnitController : MonoBehaviour, IObject
                 expolionObject.AddExplosionForce(ExplosionForce, _top.transform.position, 10f);
             }
         });
+    }
+
+    public void WinAnimation()
+    {
+
+
     }
 
     private void NotHolding(InputAction.CallbackContext ctx)
