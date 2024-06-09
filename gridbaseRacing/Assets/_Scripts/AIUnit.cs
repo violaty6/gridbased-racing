@@ -26,6 +26,7 @@ public class AIUnit : MonoBehaviour,IObject
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
     public Vector2 forward { get; }
+    public bool isMove { get; }
 
     public void Move(Node nextNode, bool isPlayerAction)
     {

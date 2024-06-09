@@ -17,12 +17,12 @@ public class FinishNodeSocket : MonoBehaviour,INode
     public void Interact(Node fromNode, Node toNode,IObject interactOwner)
     {
         Vector2 direction = new Vector2(-transform.right.x,-transform.right.z);
-        if (direction == interactOwner.forward)
+        if (direction == interactOwner.forward && !interactOwner.isMove)
         {
             if (interactOwner.gameObject.GetComponent<UnitController>() !=null)
             {
                 interactOwner.gameObject.GetComponent<UnitController>().isCrashed = true;
-                DOVirtual.DelayedCall(0.5f, () =>
+                DOVirtual.DelayedCall(0.4f, () =>
                 {
                     ParkIcon.DOColor(new Color(0, 1, 0, 1), 1f).SetEase(Ease.InCirc).OnComplete(() =>
                     {

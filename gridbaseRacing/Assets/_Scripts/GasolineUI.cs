@@ -26,9 +26,17 @@ public class GasolineUI : MonoBehaviour
     {
         if (isGasolineOut)return;
         gasolineInt--;
-        currentFloat= currentFloat - dividedMove;
-        fillSprite.DOFillAmount(currentFloat, 0.6f).SetEase(Ease.OutQuart);
-        gasolineIntText.text = gasolineInt.ToString()+" L";
+        if (fillSprite !=null)
+        {
+            currentFloat= currentFloat - dividedMove;
+            fillSprite.DOFillAmount(currentFloat, 0.6f).SetEase(Ease.OutQuart);
+            gasolineIntText.text = gasolineInt.ToString()+" L";
+        }
+        else
+        {
+            gasolineIntText.text = gasolineInt.ToString();
+        }
+
         if (gasolineInt == 0) isGasolineOut = true;
     }
 

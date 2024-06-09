@@ -24,7 +24,7 @@ public class Node : MonoBehaviour,INode
 
 
     [OnValueChanged("ChangeNode")] [SerializeField][Range(0, 7)]
-    private int currentNodeIndex;
+    private int currentNodeIndex; 
     
     private int currentRot = 0;
     [Button(ButtonSizes.Gigantic)]

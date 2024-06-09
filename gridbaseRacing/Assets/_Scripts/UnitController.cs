@@ -13,6 +13,7 @@ public interface IObject
 {
     public Node currentNode { get; set; }
     public Vector2 forward { get;}
+    public bool isMove { get;}
     public GameObject gameObject{ get;}
     public void Move(Node nextNode,bool isPlayerAction);
     public void Crash(Node crashNode);
@@ -49,6 +50,10 @@ public class UnitController : MonoBehaviour, IObject
     public GameObject gameObject
     {
         get { return transform.gameObject; }
+    }
+    public bool isMove
+    {
+        get { return isMoving; }
     }
     public Vector2Int forwardDirection;
     public Vector2Int rightDirection;
@@ -200,7 +205,7 @@ public class UnitController : MonoBehaviour, IObject
             return;
         }
         isMoving = true;
-        CheckAndMove(targetNode,isPlayerAction,isTurn);
+        CheckAndMove(targetNode,isPlayerAction,isTurn,true);
     }
     private void MoveLocalTurn(Vector2 input1,Vector2 input2, bool isPlayerAction,bool isTurn)
     {
@@ -235,8 +240,8 @@ public class UnitController : MonoBehaviour, IObject
             return;
         }
         isMoving = true;
-        CheckAndMove(targetNode, isPlayerAction, false);
-        CheckAndMove(targetNode2,isPlayerAction,isTurn);
+        CheckAndMove(targetNode, isPlayerAction, false,false);
+        CheckAndMove(targetNode2,isPlayerAction,isTurn,true);
     }
     private Node.NodeTag CheckNode(Node targetNode)
     {
@@ -249,7 +254,7 @@ public class UnitController : MonoBehaviour, IObject
             return targetNode.currentTag;
         }
     }
-    private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn)
+    private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn,bool isFinal)
     {
         if (isCrashed)return;
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
@@ -281,6 +286,10 @@ public class UnitController : MonoBehaviour, IObject
             {
                 forwardDirection = (rightDirection * curInput.x);
                 rightDirection =new Vector2Int(forwardDirection.y, -forwardDirection.x)*isReverse;
+            }
+            if (isFinal)
+            {
+                isMoving = false;
             }
             currentNode.UnInteract(this);
             previusNode = currentNode;
@@ -404,7 +413,7 @@ public class UnitController : MonoBehaviour, IObject
     }
     public void Move(Node nextNode,bool isPlayerAction)
     {
-        CheckAndMove(nextNode,isPlayerAction,false);
+        CheckAndMove(nextNode,isPlayerAction,false,true);
         isMoving = true;
     }
     public void Crash(Node crashNode)
