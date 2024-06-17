@@ -37,7 +37,11 @@ public class GasolineUI : MonoBehaviour
             gasolineIntText.text = gasolineInt.ToString();
         }
 
-        if (gasolineInt == 0) isGasolineOut = true;
+        if (gasolineInt == 0)
+        {
+            GameEvents.current.onGasolineOutPerformed(0);
+            isGasolineOut = true;
+        }
     }
 
     private void DivideToList()

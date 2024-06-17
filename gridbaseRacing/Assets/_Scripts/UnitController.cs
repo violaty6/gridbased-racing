@@ -75,6 +75,7 @@ public class UnitController : MonoBehaviour, IObject
         currentNode = _gridManager.GetTileAt(Direction.GetCords(transform.position));
         currentNode.onNodeObject = this;
         GameEvents.current.onCameraSwitch += CheckInputs;
+        GameEvents.current.onGasolineOut += OutOfGasoline;
         forwardDirection = new Vector2Int(Mathf.RoundToInt(transform.forward.x), Mathf.RoundToInt(transform.forward.z)) ;
         rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
         curInput = new Vector2Int(0,1);
@@ -111,6 +112,12 @@ public class UnitController : MonoBehaviour, IObject
         {
             _unitControls.Disable();
         }
+    }
+
+    private void OutOfGasoline(int i)
+    {
+        isCrashed = true;
+        _unitControls.Disable();
     }
     private void OnCrash(Node _crashNode)
     {
