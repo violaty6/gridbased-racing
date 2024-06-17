@@ -42,6 +42,9 @@ public class UnitController : MonoBehaviour, IObject
     private Sequence MoveSequence;
     private Sequence EngineFeedbackSequence;
     [SerializeField] private MMFeedbacks FeelCrashFeedback;
+    [SerializeField] private MMF_Player CarStartFeedback;
+    [SerializeField] private MMF_Player MoveStartFeedback;
+    [SerializeField] private MMF_Player StretchFeedback;
 
     public Vector2 forward
     {
@@ -80,6 +83,7 @@ public class UnitController : MonoBehaviour, IObject
         rightDirection =new Vector2Int(Mathf.RoundToInt(transform.right.x), Mathf.RoundToInt(transform.right.z));
         curInput = new Vector2Int(0,1);
         movePath = new List<Vector3>();
+        CarStartFeedback.PlayFeedbacks();
     }
     private void OnEnable()
     {
@@ -263,7 +267,6 @@ public class UnitController : MonoBehaviour, IObject
     }
     private void CheckAndMove(Node checkNode,bool isPlayerAction,bool isTurn,bool isFinal)
     {
-        if (isCrashed)return;
         Node.NodeTag targetNodeTag = CheckNode(checkNode); // Null ise Void ekliyor.
         if (targetNodeTag == Node.NodeTag.Void)
         {
@@ -322,6 +325,8 @@ public class UnitController : MonoBehaviour, IObject
         transform.DOPath(movePath.ToArray(), 1.25f, PathType.CatmullRom).SetLookAt(1.25f,Vector3.forward*isReverse).SetEase(Ease.OutQuart);
         //TİRES
         _body.GetComponent<Rigidbody>().AddRelativeTorque(-Vector2.right*3,ForceMode.Impulse);
+        
+        MoveStartFeedback.PlayFeedbacks();
         foreach (var wheel in _wheels)
         {
             wheel.transform.GetChild(0).DOLocalRotate(new Vector3(0,0,360*isReverse), 1.25f,RotateMode.LocalAxisAdd).SetEase(Ease.OutQuart);
